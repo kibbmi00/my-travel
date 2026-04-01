@@ -884,10 +884,12 @@ function renderItinerary(){
   var dayDate=getDayDate(currentDay);
   var dayDateStr=dayDate?(dayDate.getFullYear()+'년 '+(dayDate.getMonth()+1)+'월 '+dayDate.getDate()+'일 ('+WEEKDAYS[dayDate.getDay()]+')'):'';
 
-  var html='<div class="day-head-card">'+
+  var html='<div class="day-head-card" style="position:relative;">'+
     '<div class="day-head-label">'+currentDay+'</div>'+
     (dayDateStr?'<div class="day-head-date">'+dayDateStr+'</div>':'')+
     '<div class="day-head-theme">'+(data.theme||'')+'</div>'+
+    '<button onclick="editDayTheme(\''+currentDay+'\')" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">✏️ 테마 수정</button>'+
+    '<button onclick="deleteDay(\''+currentDay+'\')" style="position:absolute;bottom:12px;right:12px;background:rgba(255,255,255,.15);border:none;color:rgba(255,255,255,.8);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans);">🗑 Day 삭제</button>'+
   '</div>';
 
   html+='<div class="schedule-list">';
@@ -906,7 +908,13 @@ function renderItinerary(){
       '<div class="sch-time-col"><div class="sch-time">'+p.arrive+'</div></div>'+
       '<div class="sch-dot-col"><div class="sch-dot"></div>'+(isLast?'':'<div class="sch-line"></div>')+'</div>'+
       '<div class="sch-body">'+
-        '<div class="sch-name"><span class="sch-icon">'+gi(p.name)+'</span>'+p.name+'</div>'+
+        '<div class="sch-name" style="justify-content:space-between;">'+
+          '<span style="display:flex;align-items:center;gap:6px;"><span class="sch-icon">'+gi(p.name)+'</span>'+p.name+'</span>'+
+          '<span style="display:flex;gap:4px;">'+
+            '<button onclick="editPlace(\''+currentDay+'\','+idx+')" style="background:var(--off2);border:none;border-radius:var(--r2);padding:3px 8px;font-size:11px;font-weight:700;color:var(--navy2);cursor:pointer;font-family:var(--sans);">수정</button>'+
+            '<button onclick="deletePlace(\''+currentDay+'\','+idx+')" style="background:#ffebee;border:none;border-radius:var(--r2);padding:3px 8px;font-size:11px;font-weight:700;color:#c62828;cursor:pointer;font-family:var(--sans);">삭제</button>'+
+          '</span>'+
+        '</div>'+
         '<img id="'+imgId+'" class="sch-img" src="" alt="'+p.name+'" style="display:none;">'+
         '<div class="sch-chips">'+
           (p.stay&&p.stay!=='-'?'<span class="sch-chip">⏱ '+p.stay+'</span>':'')+
@@ -927,6 +935,58 @@ function renderItinerary(){
 }
 function selDay(d){currentDay=d;renderItinerary();}
 function addNewDay(){var n=prompt('새 Day 이름 (예: Day 4)');if(!n)return;var th=prompt('테마','');if(!itin[currentTrip])itin[currentTrip]={};itin[currentTrip][n]={theme:th||n,places:[]};currentDay=n;saveAll();renderItinerary();}
+
+function editDayTheme(day){
+  var data=itin[currentTrip][day];if(!data)return;
+  var th=prompt('Day 테마 수정',data.theme||'');
+  if(th!==null){data.theme=th;saveAll();renderItinerary();}
+}
+function deleteDay(day){
+  if(!confirm(day+'을 삭제할까요?\n(해당 Day의 모든 장소가 삭제돼요)'))return;
+  delete itin[currentTrip][day];
+  var dks=Object.keys(itin[currentTrip]||{});
+  currentDay=dks.length?dks[0]:'Day 1';
+  saveAll();renderItinerary();
+}
+function deletePlace(day,idx){
+  if(!confirm('이 장소를 삭제할까요?'))return;
+  itin[currentTrip][day].places.splice(idx,1);
+  saveAll();renderItinerary();
+}
+
+var editingDay=null;var editingIdx=-1;
+function editPlace(day,idx){
+  editingDay=day;editingIdx=idx;
+  var p=itin[currentTrip][day].places[idx];if(!p)return;
+  var days=Object.keys(itin[currentTrip]||{});
+  document.getElementById('m-ep-day').innerHTML=days.map(function(d){return'<option value="'+d+'"'+(d===day?' selected':'')+'>'+d+'</option>';}).join('');
+  document.getElementById('m-ep-name').value=p.name||'';
+  document.getElementById('m-ep-arrive').value=p.arrive||'';
+  document.getElementById('m-ep-stay').value=p.stay||'';
+  document.getElementById('m-ep-hours').value=p.hours||'';
+  document.getElementById('m-ep-fee').value=p.fee||'';
+  document.getElementById('m-ep-note').value=p.note||'';
+  document.getElementById('m-ep-transit').value=p.transit&&p.transit.method?p.transit.method:'';
+  document.getElementById('m-ep-ttime').value=p.transit&&p.transit.time?p.transit.time:'';
+  document.getElementById('m-ep-ttip').value=p.transit&&p.transit.tip?p.transit.tip:'';
+  openM('modal-edit-place');
+}
+function saveEditPlace(){
+  var newDay=document.getElementById('m-ep-day').value;
+  var p=itin[currentTrip][editingDay].places[editingIdx];if(!p)return;
+  var name=document.getElementById('m-ep-name').value.trim();if(!name)return;
+  var updated={name:name,arrive:document.getElementById('m-ep-arrive').value||'--:--',stay:document.getElementById('m-ep-stay').value||'-',hours:document.getElementById('m-ep-hours').value||'-',fee:document.getElementById('m-ep-fee').value||'-',note:document.getElementById('m-ep-note').value||'',transit:{method:document.getElementById('m-ep-transit').value||'',time:document.getElementById('m-ep-ttime').value||'',tip:document.getElementById('m-ep-ttip').value||''}};
+  if(newDay!==editingDay){
+    itin[currentTrip][editingDay].places.splice(editingIdx,1);
+    if(!itin[currentTrip][newDay])itin[currentTrip][newDay]={theme:newDay,places:[]};
+    itin[currentTrip][newDay].places.push(updated);
+    currentDay=newDay;
+  }else{
+    itin[currentTrip][editingDay].places[editingIdx]=updated;
+  }
+  saveAll();closeM('modal-edit-place');renderItinerary();
+}
+
 function addPlace(){var day=document.getElementById('m-p-day').value,name=document.getElementById('m-p-name').value.trim();if(!name)return;if(!itin[currentTrip])itin[currentTrip]={};if(!itin[currentTrip][day])itin[currentTrip][day]={theme:day,places:[]};itin[currentTrip][day].places.push({name:name,arrive:document.getElementById('m-p-arrive').value||'--:--',stay:document.getElementById('m-p-stay').value||'-',hours:document.getElementById('m-p-hours').value||'-',fee:document.getElementById('m-p-fee').value||'-',note:document.getElementById('m-p-note').value||'',transit:{method:document.getElementById('m-p-transit').value||'',time:document.getElementById('m-p-ttime').value||'',tip:document.getElementById('m-p-ttip').value||''}});currentDay=day;saveAll();closeM('modal-place');['m-p-name','m-p-arrive','m-p-stay','m-p-hours','m-p-fee','m-p-note','m-p-ttime','m-p-ttip'].forEach(function(i){document.getElementById(i).value='';});renderItinerary();}
 
 /* ── CURRENCY ── */
@@ -1221,6 +1281,31 @@ renderHome();
     </div>
   </div>
 </div>
+
+<div class="modal-bg" id="modal-edit-place"><div class="modal-box">
+  <div class="modal-title">장소 수정</div>
+  <div class="modal-lbl">Day</div><select class="modal-sel" id="m-ep-day"></select>
+  <div class="modal-lbl">장소명</div><input class="modal-inp" id="m-ep-name" placeholder="예: 트레비 분수">
+  <div class="m2col">
+    <div><div class="modal-lbl">도착 예정</div><input class="modal-inp" id="m-ep-arrive" placeholder="09:00"></div>
+    <div><div class="modal-lbl">관광 소요시간</div><input class="modal-inp" id="m-ep-stay" placeholder="1시간 30분"></div>
+  </div>
+  <div class="modal-lbl">운영시간</div><input class="modal-inp" id="m-ep-hours" placeholder="09:00 - 19:00">
+  <div class="modal-lbl">입장료</div><input class="modal-inp" id="m-ep-fee" placeholder="€16">
+  <div class="modal-lbl">이동 수단</div>
+  <select class="modal-sel" id="m-ep-transit">
+    <option value="">첫 장소 / 해당없음</option>
+    <option value="도보">🚶 도보</option><option value="지하철">🚇 지하철</option>
+    <option value="버스">🚌 버스</option><option value="택시">🚕 택시</option>
+    <option value="트램">🚋 트램</option><option value="기차">🚂 기차</option>
+  </select>
+  <div class="m2col">
+    <div><div class="modal-lbl">이동 소요시간</div><input class="modal-inp" id="m-ep-ttime" placeholder="10분"></div>
+    <div><div class="modal-lbl">거리/팁</div><input class="modal-inp" id="m-ep-ttip" placeholder="약 800m"></div>
+  </div>
+  <div class="modal-lbl">메모</div><input class="modal-inp" id="m-ep-note" placeholder="예: 사전 예약 필수">
+  <div class="modal-btns"><button class="btn-c" onclick="closeM('modal-edit-place')">취소</button><button class="btn-ok" onclick="saveEditPlace()">저장</button></div>
+</div></div>
 
 </body>
 </html>
