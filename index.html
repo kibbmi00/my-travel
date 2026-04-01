@@ -270,12 +270,12 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
 .add-btn{width:100%;margin-top:12px;padding:12px;border-radius:var(--r);border:2px dashed var(--off2);color:var(--navy2);background:var(--card);cursor:pointer;font-size:13px;font-weight:700;font-family:var(--sans);box-shadow:0 2px 8px rgba(26,35,126,.06);}
 
 /* ── MODALS ────────────────────────────────────── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,35,126,.45);z-index:200;align-items:flex-end;justify-content:center;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,35,126,.5);z-index:200;align-items:center;justify-content:center;padding:20px;}
 .modal-bg.show{display:flex;}
-.modal-box{background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(var(--safe-bot)+18px);width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
+.modal-box{background:#fff;border-radius:24px;padding:22px 18px 20px;width:100%;max-width:420px;max-height:82vh;overflow-y:auto;}
 .modal-box::-webkit-scrollbar{display:none;}
-.modal-handle{width:36px;height:4px;background:var(--off2);border-radius:2px;margin:0 auto 16px;}
-.modal-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px;}
+.modal-handle{display:none;}
+.modal-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:16px;}
 .modal-lbl{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:.5px;}
 .modal-inp,.modal-sel{width:100%;padding:11px 13px;border-radius:var(--r2);border:2px solid var(--off2);background:var(--off);color:var(--text);font-size:14px;font-weight:600;font-family:var(--sans);}
 .modal-inp:focus,.modal-sel:focus{outline:none;border-color:var(--navy2);}
@@ -359,7 +359,7 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
           <div style="font-size:11px;color:var(--text3);margin-top:6px;font-weight:600;" id="prog-text">0 / 0 완료</div>
         </div>
         <div id="checklist-body"></div>
-        <button class="add-btn" onclick="openM('modal-check')">+ 항목 추가</button>
+        <button class="add-btn" onclick="openCheckModal()">+ 항목 추가</button>
       </div>
 
       <!-- ITINERARY -->
@@ -486,7 +486,14 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
   <div class="modal-handle"></div>
   <div class="modal-title">준비 항목 추가</div>
   <div class="modal-lbl">카테고리</div>
-  <select class="modal-sel" id="m-c-cat"><option>항공/숙소</option><option>서류/비자</option><option>짐 챙기기</option><option>현지 준비</option></select>
+  <select class="modal-sel" id="m-c-cat" onchange="toggleCustomCat(this)">
+    <option>항공/숙소</option>
+    <option>서류/비자</option>
+    <option>짐 챙기기</option>
+    <option>현지 준비</option>
+    <option value="__custom__">+ 직접 입력</option>
+  </select>
+  <input class="modal-inp" id="m-c-cat-custom" placeholder="카테고리 직접 입력" style="display:none;margin-top:6px;">
   <div class="modal-lbl">항목 이름</div><input class="modal-inp" id="m-c-label" placeholder="예: 여권 유효기간 확인">
   <div class="modal-lbl">알람 날짜 (선택)</div><input class="modal-inp" id="m-c-alarm" type="date">
   <div class="modal-btns"><button class="btn-c" onclick="closeM('modal-check')">취소</button><button class="btn-ok" onclick="addCheck()">추가</button></div>
@@ -772,7 +779,37 @@ function clearAlarm(){
   if(it){it.alarm='';saveAll();renderChecklist();}
   document.getElementById('alarm-modal').classList.remove('show');
 }
-function addCheck(){var cat=document.getElementById('m-c-cat').value,label=document.getElementById('m-c-label').value.trim(),alarm=document.getElementById('m-c-alarm').value;if(!label)return;if(!checks[currentTrip])checks[currentTrip]=[];checks[currentTrip].push({id:Date.now(),cat:cat,label:label,done:false,alarm:alarm});saveAll();closeM('modal-check');document.getElementById('m-c-label').value='';document.getElementById('m-c-alarm').value='';renderChecklist();}
+function toggleCustomCat(sel){
+  var custom=document.getElementById('m-c-cat-custom');
+  custom.style.display=sel.value==='__custom__'?'block':'none';
+  if(sel.value==='__custom__')custom.focus();
+}
+
+function openCheckModal(){
+  var sel=document.getElementById('m-c-cat');
+  var existing=[...new Set((checks[currentTrip]||[]).map(function(i){return i.cat;}))];
+  var defaults=['항공/숙소','서류/비자','짐 챙기기','현지 준비'];
+  var all=[...new Set([...defaults,...existing])];
+  sel.innerHTML=all.map(function(c){return'<option value="'+c+'">'+c+'</option>';}).join('')+'<option value="__custom__">+ 직접 입력</option>';
+  document.getElementById('m-c-cat-custom').style.display='none';
+  openM('modal-check');
+}
+
+function addCheck(){
+  var selVal=document.getElementById('m-c-cat').value;
+  var cat=selVal==='__custom__'?document.getElementById('m-c-cat-custom').value.trim():selVal;
+  if(!cat)cat='기타';
+  var label=document.getElementById('m-c-label').value.trim();
+  var alarm=document.getElementById('m-c-alarm').value;
+  if(!label)return;
+  if(!checks[currentTrip])checks[currentTrip]=[];
+  checks[currentTrip].push({id:Date.now(),cat:cat,label:label,done:false,alarm:alarm});
+  saveAll();closeM('modal-check');
+  document.getElementById('m-c-label').value='';
+  document.getElementById('m-c-alarm').value='';
+  document.getElementById('m-c-cat-custom').value='';
+  renderChecklist();
+}
 
 /* ── ITINERARY / SCHEDULE ── */
 var WEEKDAYS = ['일','월','화','수','목','금','토'];
