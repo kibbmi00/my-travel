@@ -788,18 +788,6 @@ function deleteTrip(){
   saveAll();closeM('modal-edit-trip');renderHome();
 }
 
-<div class="modal-bg" id="modal-edit-trip"><div class="modal-box">
-  <div class="modal-handle"></div>
-  <div class="modal-title">여행 정보 수정</div>
-  <div class="modal-lbl">국가 (이모지 포함)</div><input class="modal-inp" id="m-e-t-country" placeholder="예: 🇮🇹 이탈리아">
-  <div class="modal-lbl">여행 이름</div><input class="modal-inp" id="m-e-t-name" placeholder="예: 이탈리아 여행">
-  <div class="modal-lbl">기간</div><input class="modal-inp" id="m-e-t-dates" placeholder="예: 2024 · 12박 13일">
-  <div class="modal-btns">
-    <button class="btn-c" onclick="closeM('modal-edit-trip')">취소</button>
-    <button style="flex:1;padding:12px;border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--sans);cursor:pointer;background:#ffebee;border:none;color:#c62828;" onclick="deleteTrip()">삭제</button>
-    <button class="btn-ok" onclick="saveEditTrip()">저장</button>
-  </div>
-</div></div>
 function openM(id){if(id==='modal-place'){var days=Object.keys(itin[currentTrip]||{});document.getElementById('m-p-day').innerHTML=days.map(function(d){return'<option value="'+d+'">'+d+'</option>';}).join('')||'<option value="Day 1">Day 1</option>';}document.getElementById(id).classList.add('show');}
 function closeM(id){document.getElementById(id).classList.remove('show');}
 document.querySelectorAll('.modal-bg').forEach(function(bg){bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('show');});});
@@ -816,5 +804,18 @@ ensureDefaults();
 fetchFx();
 renderHome();
 </script>
+<div class="modal-bg" id="modal-edit-trip"><div class="modal-box">
+  <div class="modal-handle"></div>
+  <div class="modal-title">여행 정보 수정</div>
+  <div class="modal-lbl">국가 (이모지 포함)</div><input class="modal-inp" id="m-e-t-country" placeholder="예: 🇮🇹 이탈리아">
+  <div class="modal-lbl">여행 이름</div><input class="modal-inp" id="m-e-t-name" placeholder="예: 이탈리아 여행">
+  <div class="modal-lbl">기간</div><input class="modal-inp" id="m-e-t-dates" placeholder="예: 2024 · 12박 13일">
+  <div class="modal-btns">
+    <button class="btn-c" onclick="closeM('modal-edit-trip')">취소</button>
+    <button style="flex:1;padding:12px;border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--sans);cursor:pointer;background:#ffebee;border:none;color:#c62828;" onclick="deleteTrip()">삭제</button>
+    <button class="btn-ok" onclick="saveEditTrip()">저장</button>
+  </div>
+</div></div>
+
 </body>
 </html>
