@@ -135,19 +135,50 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .transit-info{font-size:11px;color:var(--text3);}
 
 /* ── CURRENCY ──────────────────────────────────── */
-.fx-hero{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:20px;margin-bottom:14px;color:#fff;}
-.fx-rate-big{font-size:32px;font-weight:800;margin-bottom:2px;}
-.fx-rate-sub{font-size:12px;opacity:.7;margin-bottom:16px;}
+.fx-selector{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;}
+.fx-selector::-webkit-scrollbar{display:none;}
+.fx-sel-btn{flex-shrink:0;padding:7px 14px;border-radius:var(--r3);border:2px solid var(--off2);font-size:12px;font-weight:700;cursor:pointer;background:var(--card);color:var(--text3);font-family:var(--sans);transition:all .15s;display:flex;align-items:center;gap:5px;}
+.fx-sel-btn.active{background:var(--navy2);border-color:var(--navy2);color:#fff;}
+.fx-calc-card{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:18px;margin-bottom:4px;color:#fff;}
+.fx-calc-top{margin-bottom:14px;}
+.fx-selected-info{display:flex;align-items:center;gap:12px;}
+.fx-flag{font-size:28px;}
+.fx-cur-name{font-size:14px;font-weight:700;margin-bottom:3px;}
+.fx-rate-line{font-size:20px;font-weight:800;}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:5px;}
 .fx-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fx-field label{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);display:block;margin-bottom:5px;}
 .fx-inp{width:100%;padding:10px 12px;border-radius:var(--r2);border:none;background:rgba(255,255,255,.18);color:#fff;font-size:18px;font-weight:700;font-family:var(--sans);}
 .fx-inp::placeholder{color:rgba(255,255,255,.4);}
-.fx-inp:focus{outline:none;background:rgba(255,255,255,.25);}
-.fx-table{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;}
-.fx-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--off);}
-.fx-row:last-child{border-bottom:none;}
-.fx-eur{font-size:13px;font-weight:600;color:var(--text3);}
-.fx-krw{font-size:14px;font-weight:800;color:var(--navy2);}
+.fx-inp:focus{outline:none;background:rgba(255,255,255,.28);}
+.fx-rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fx-rate-card{background:var(--card);border-radius:var(--r2);box-shadow:0 2px 8px rgba(26,35,126,.08);padding:12px 14px;cursor:pointer;transition:all .15s;border:2px solid transparent;}
+.fx-rate-card:active{transform:scale(.97);}
+.fx-rate-card.selected{border-color:var(--navy2);}
+.fx-rc-top{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.fx-rc-flag{font-size:18px;}
+.fx-rc-code{font-size:11px;font-weight:700;color:var(--text3);}
+.fx-rc-name{font-size:11px;color:var(--text3);}
+.fx-rc-rate{font-size:18px;font-weight:800;color:var(--navy2);}
+.fx-rc-change{font-size:11px;font-weight:600;margin-top:2px;}
+.fx-rc-change.up{color:#ef4444;}
+.fx-rc-change.dn{color:#3b82f6;}
+
+/* ── EXPENSE CHARTS ────────────────────────────── */
+.cat-chart-wrap{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:8px;}
+.cat-bar-item{margin-bottom:10px;}
+.cat-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.cat-bar-label{font-size:13px;font-weight:600;color:var(--text);}
+.cat-bar-amt{font-size:12px;font-weight:700;color:var(--navy2);}
+.cat-bar-pct{font-size:11px;color:var(--text3);margin-left:6px;}
+.cat-bar-bg{height:8px;background:var(--off2);border-radius:4px;overflow:hidden;}
+.cat-bar-fill{height:100%;border-radius:4px;transition:width .5s;}
+.date-chart-wrap{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:8px;}
+.date-bars{display:flex;align-items:flex-end;gap:6px;height:100px;margin-bottom:6px;}
+.date-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.date-bar{width:100%;border-radius:4px 4px 0 0;background:var(--navy2);min-height:3px;transition:height .4s;}
+.date-bar-lbl{font-size:9px;color:var(--text3);font-weight:600;white-space:nowrap;}
+.date-bar-amt{font-size:9px;color:var(--navy2);font-weight:700;}
 
 /* ── EXPENSE ───────────────────────────────────── */
 .exp-hero{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:18px 20px;margin-bottom:14px;color:#fff;display:flex;justify-content:space-between;align-items:center;}
@@ -337,23 +368,37 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 
       <!-- CURRENCY -->
       <div id="tab-currency" class="tab-content">
-        <div class="fx-hero">
-          <div class="fx-rate-big" id="fx-display">1,490 <span style="font-size:16px;opacity:.7;">원/€</span></div>
-          <div class="fx-rate-sub"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:4px;"></span><span id="fx-updated">업데이트 중...</span></div>
+        <div class="fx-selector" id="fx-selector"></div>
+        <div class="fx-calc-card">
+          <div class="fx-calc-top">
+            <div class="fx-selected-info" id="fx-selected-info">
+              <span class="fx-flag" id="fx-flag">🇪🇺</span>
+              <div>
+                <div class="fx-cur-name" id="fx-cur-name">유럽연합 EUR</div>
+                <div class="fx-rate-line"><span class="live-dot"></span><span id="fx-rate-val">1,490</span>원 <span style="font-size:10px;color:rgba(255,255,255,.6);" id="fx-updated2">업데이트 중</span></div>
+              </div>
+            </div>
+          </div>
           <div class="fx-inputs">
-            <div class="fx-field"><label>유로 (€)</label><input class="fx-inp" type="number" id="eur-in" placeholder="0" oninput="calcEur()"></div>
-            <div class="fx-field"><label>원화 (₩)</label><input class="fx-inp" type="number" id="krw-in" placeholder="0" oninput="calcKrw()"></div>
+            <div class="fx-field"><label id="fx-foreign-label">현지 금액</label><input class="fx-inp" type="number" id="fx-foreign" placeholder="0" oninput="calcForeign()"></div>
+            <div class="fx-field"><label>원화 (₩)</label><input class="fx-inp" type="number" id="fx-krw" placeholder="0" oninput="calcKrwNew()"></div>
           </div>
         </div>
-        <div class="fx-table" id="fx-table"></div>
+        <div class="sec-label" style="margin-top:16px;">주요 통화 실시간 환율</div>
+        <div id="fx-rates-grid"></div>
       </div>
 
       <!-- EXPENSE -->
       <div id="tab-expense" class="tab-content">
         <div class="exp-hero">
           <div><div class="exp-total-lbl">총 지출</div><div class="exp-total-amt" id="total-krw">₩0</div></div>
-          <div><div class="exp-eur-lbl">EUR 환산</div><div class="exp-eur-amt" id="total-eur">€0</div></div>
+          <div><div class="exp-eur-lbl">현지화 환산</div><div class="exp-eur-amt" id="total-eur">€0</div></div>
         </div>
+        <div class="sec-label">카테고리별 지출</div>
+        <div id="exp-cat-chart"></div>
+        <div class="sec-label">일자별 지출</div>
+        <div id="exp-date-chart"></div>
+        <div class="sec-label">지출 내역</div>
         <div class="exp-list" id="exp-list"></div>
         <button class="add-btn" onclick="openM('modal-exp')">+ 지출 추가</button>
       </div>
@@ -476,8 +521,9 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
   <div class="modal-lbl">카테고리</div>
   <select class="modal-sel" id="m-e-cat"><option>식사</option><option>교통</option><option>숙소</option><option>관광</option><option>쇼핑</option><option>기타</option></select>
   <div class="modal-lbl">내용</div><input class="modal-inp" id="m-e-name" placeholder="예: 나폴리 피자">
-  <div class="modal-lbl">금액 (EUR €)</div><input class="modal-inp" id="m-e-eur" type="number" placeholder="0" oninput="previewKrw()">
+  <div class="modal-lbl">금액 (현지화)</div><input class="modal-inp" id="m-e-eur" type="number" placeholder="0" oninput="previewKrw()">
   <div id="exp-preview" style="font-size:12px;font-weight:700;color:var(--navy2);margin-top:4px;min-height:14px;"></div>
+  <div class="modal-lbl">날짜 (선택)</div><input class="modal-inp" id="m-e-date" type="date">
   <div class="modal-btns"><button class="btn-c" onclick="closeM('modal-exp')">취소</button><button class="btn-ok" onclick="addExp()">추가</button></div>
 </div></div>
 
@@ -844,15 +890,139 @@ function addNewDay(){var n=prompt('새 Day 이름 (예: Day 4)');if(!n)return;va
 function addPlace(){var day=document.getElementById('m-p-day').value,name=document.getElementById('m-p-name').value.trim();if(!name)return;if(!itin[currentTrip])itin[currentTrip]={};if(!itin[currentTrip][day])itin[currentTrip][day]={theme:day,places:[]};itin[currentTrip][day].places.push({name:name,arrive:document.getElementById('m-p-arrive').value||'--:--',stay:document.getElementById('m-p-stay').value||'-',hours:document.getElementById('m-p-hours').value||'-',fee:document.getElementById('m-p-fee').value||'-',note:document.getElementById('m-p-note').value||'',transit:{method:document.getElementById('m-p-transit').value||'',time:document.getElementById('m-p-ttime').value||'',tip:document.getElementById('m-p-ttip').value||''}});currentDay=day;saveAll();closeM('modal-place');['m-p-name','m-p-arrive','m-p-stay','m-p-hours','m-p-fee','m-p-note','m-p-ttime','m-p-ttip'].forEach(function(i){document.getElementById(i).value='';});renderItinerary();}
 
 /* ── CURRENCY ── */
-async function fetchFx(){try{var r=await fetch('https://api.frankfurter.app/latest?from=EUR&to=KRW');var d=await r.json();if(d.rates&&d.rates.KRW){fxRate=Math.round(d.rates.KRW);document.getElementById('fx-display').innerHTML=fxRate.toLocaleString()+' <span style="font-size:16px;opacity:.7;">원/€</span>';document.getElementById('fx-updated').textContent='업데이트: '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});renderFxTable();}}catch(e){renderFxTable();}}
-function renderFxTable(){var a=[1,2,5,10,20,50,100,200,500];document.getElementById('fx-table').innerHTML=a.map(function(e){return'<div class="fx-row"><span class="fx-eur">€ '+e+'</span><span class="fx-krw">₩ '+(e*fxRate).toLocaleString()+'</span></div>';}).join('');}
-function calcEur(){var v=parseFloat(document.getElementById('eur-in').value)||0;document.getElementById('krw-in').value=v?Math.round(v*fxRate):'';}
-function calcKrw(){var v=parseFloat(document.getElementById('krw-in').value)||0;document.getElementById('eur-in').value=v?(v/fxRate).toFixed(2):'';}
+var CURRENCIES=[
+  {code:'USD',name:'미국 달러',flag:'🇺🇸',sym:'$'},
+  {code:'EUR',name:'유럽 EUR',flag:'🇪🇺',sym:'€'},
+  {code:'JPY',name:'일본 엔',flag:'🇯🇵',sym:'¥'},
+  {code:'GBP',name:'영국 파운드',flag:'🇬🇧',sym:'£'},
+  {code:'CNY',name:'중국 위안',flag:'🇨🇳',sym:'¥'},
+  {code:'THB',name:'태국 바트',flag:'🇹🇭',sym:'฿'},
+  {code:'VND',name:'베트남 동',flag:'🇻🇳',sym:'₫'},
+  {code:'AUD',name:'호주 달러',flag:'🇦🇺',sym:'A$'},
+];
+var fxRates={USD:1490,EUR:1640,JPY:10,GBP:1900,CNY:205,THB:42,VND:0.06,AUD:960};
+var selectedCurrency='EUR';
+fxRate=fxRates['EUR'];
+
+async function fetchFx(){
+  try{
+    var codes=CURRENCIES.map(function(c){return c.code;}).join(',');
+    var r=await fetch('https://api.frankfurter.app/latest?from=KRW&to='+codes);
+    var d=await r.json();
+    if(d.rates){
+      CURRENCIES.forEach(function(c){
+        if(d.rates[c.code]) fxRates[c.code]=Math.round(1/d.rates[c.code]);
+      });
+      fxRate=fxRates[selectedCurrency];
+    }
+  }catch(e){}
+  renderFxUI();
+}
+
+function renderFxUI(){
+  var cur=CURRENCIES.find(function(c){return c.code===selectedCurrency;})||CURRENCIES[1];
+  fxRate=fxRates[selectedCurrency]||1490;
+  var sel=document.getElementById('fx-selector');
+  if(sel) sel.innerHTML=CURRENCIES.map(function(c){return'<button class="fx-sel-btn'+(c.code===selectedCurrency?' active':'')+'" onclick="selectCurrency(\''+c.code+'\')">'+c.flag+' '+c.code+'</button>';}).join('');
+  var fi=document.getElementById('fx-selected-info');
+  if(fi) fi.innerHTML='<span class="fx-flag">'+cur.flag+'</span><div><div class="fx-cur-name">'+cur.name+'</div><div class="fx-rate-line"><span class="live-dot"></span>1'+cur.sym+' = <span style="font-size:20px;font-weight:800;">'+fxRate.toLocaleString()+'</span>원</div></div>';
+  var fl=document.getElementById('fx-foreign-label');
+  if(fl) fl.textContent='현지 금액 ('+cur.sym+')';
+  var upd=document.getElementById('fx-updated2');
+  if(upd) upd.textContent='업데이트: '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  var grid=document.getElementById('fx-rates-grid');
+  if(grid) grid.innerHTML='<div class="fx-rates-grid">'+CURRENCIES.map(function(c){
+    var rate=fxRates[c.code]||0;
+    return'<div class="fx-rate-card'+(c.code===selectedCurrency?' selected':'')+'" onclick="selectCurrency(\''+c.code+'\')">'+
+      '<div class="fx-rc-top"><span class="fx-rc-flag">'+c.flag+'</span><div><div class="fx-rc-code">'+c.code+'</div><div class="fx-rc-name">'+c.name+'</div></div></div>'+
+      '<div class="fx-rc-rate">'+rate.toLocaleString()+'<span style="font-size:11px;font-weight:600;color:var(--text3);">원</span></div>'+
+    '</div>';
+  }).join('')+'</div>';
+  document.getElementById('fx-foreign').value='';
+  document.getElementById('fx-krw').value='';
+}
+
+function selectCurrency(code){
+  selectedCurrency=code;
+  fxRate=fxRates[code]||1490;
+  renderFxUI();
+}
+function calcForeign(){var v=parseFloat(document.getElementById('fx-foreign').value)||0;document.getElementById('fx-krw').value=v?Math.round(v*fxRate):'';}
+function calcKrwNew(){var v=parseFloat(document.getElementById('fx-krw').value)||0;var cur=CURRENCIES.find(function(c){return c.code===selectedCurrency;});document.getElementById('fx-foreign').value=v&&fxRate?(v/fxRate).toFixed(cur&&cur.code==='JPY'?0:2):'';}
 function previewKrw(){var v=parseFloat(document.getElementById('m-e-eur').value)||0;document.getElementById('exp-preview').textContent=v?'≈ ₩'+Math.round(v*fxRate).toLocaleString():'';}
 
 /* ── EXPENSE ── */
-function renderExpense(){var items=exps[currentTrip]||[];var tk=items.reduce(function(a,i){return a+Math.round(i.eur*fxRate);},0);var te=items.reduce(function(a,i){return a+i.eur;},0);document.getElementById('total-krw').textContent='₩'+tk.toLocaleString();document.getElementById('total-eur').textContent='€'+te.toFixed(0);document.getElementById('exp-list').innerHTML=items.length?items.map(function(item){return'<div class="exp-row"><div class="exp-cat-dot" style="background:'+(TC[item.cat]||'#3949ab')+'"></div><div class="exp-name">'+item.name+'</div><span class="exp-cat-pill">'+item.cat+'</span><div class="exp-amt-wrap"><div class="exp-eur">€'+item.eur+'</div><div class="exp-krw">₩'+Math.round(item.eur*fxRate).toLocaleString()+'</div></div></div>';}).join(''):'<div style="padding:20px;text-align:center;color:var(--text3);font-weight:600;">지출 내역이 없어요</div>';}
-function addExp(){var cat=document.getElementById('m-e-cat').value,name=document.getElementById('m-e-name').value.trim(),eur=parseFloat(document.getElementById('m-e-eur').value)||0;if(!name||!eur)return;if(!exps[currentTrip])exps[currentTrip]=[];exps[currentTrip].push({cat:cat,name:name,eur:eur});saveAll();closeM('modal-exp');document.getElementById('m-e-name').value='';document.getElementById('m-e-eur').value='';document.getElementById('exp-preview').textContent='';renderExpense();}
+var CAT_COLORS={식사:'#ef4444',교통:'#3b82f6',숙소:'#8b5cf6',관광:'#f59e0b',쇼핑:'#10b981',기타:'#6b7280'};
+function renderExpense(){
+  var items=exps[currentTrip]||[];
+  var tk=items.reduce(function(a,i){return a+Math.round(i.eur*fxRate);},0);
+  var te=items.reduce(function(a,i){return a+i.eur;},0);
+  document.getElementById('total-krw').textContent='₩'+tk.toLocaleString();
+  var cur=CURRENCIES.find(function(c){return c.code===selectedCurrency;})||{sym:'€'};
+  document.getElementById('total-eur').textContent=cur.sym+te.toFixed(0);
+  renderCatChart(items);
+  renderDateChart(items);
+  document.getElementById('exp-list').innerHTML=items.length?items.map(function(item,idx){
+    return'<div class="exp-row">'+
+      '<div class="exp-cat-dot" style="background:'+(CAT_COLORS[item.cat]||'#6b7280')+'"></div>'+
+      '<div style="flex:1;">'+
+        '<div class="exp-name">'+item.name+'</div>'+
+        (item.date?'<div style="font-size:10px;color:var(--text3);">'+item.date+'</div>':'')+
+      '</div>'+
+      '<span class="exp-cat-pill">'+item.cat+'</span>'+
+      '<div class="exp-amt-wrap"><div class="exp-eur">'+cur.sym+item.eur+'</div><div class="exp-krw">₩'+Math.round(item.eur*fxRate).toLocaleString()+'</div></div>'+
+    '</div>';
+  }).join(''):'<div style="padding:20px;text-align:center;color:var(--text3);font-weight:600;">지출 내역이 없어요</div>';
+}
+
+function renderCatChart(items){
+  var totals={};
+  items.forEach(function(i){totals[i.cat]=(totals[i.cat]||0)+Math.round(i.eur*fxRate);});
+  var total=Object.values(totals).reduce(function(a,b){return a+b;},0);
+  var el=document.getElementById('exp-cat-chart');
+  if(!el)return;
+  if(!total){el.innerHTML='<div class="cat-chart-wrap" style="text-align:center;color:var(--text3);padding:20px;">지출 내역이 없어요</div>';return;}
+  var sorted=Object.entries(totals).sort(function(a,b){return b[1]-a[1];});
+  el.innerHTML='<div class="cat-chart-wrap">'+sorted.map(function(e){
+    var pct=Math.round(e[1]/total*100);
+    return'<div class="cat-bar-item">'+
+      '<div class="cat-bar-top"><span class="cat-bar-label">'+e[0]+'</span><span><span class="cat-bar-amt">₩'+e[1].toLocaleString()+'</span><span class="cat-bar-pct">'+pct+'%</span></span></div>'+
+      '<div class="cat-bar-bg"><div class="cat-bar-fill" style="width:'+pct+'%;background:'+(CAT_COLORS[e[0]]||'#6b7280')+'"></div></div>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+
+function renderDateChart(items){
+  var byDate={};
+  items.forEach(function(i){var d=i.date||'날짜미상';byDate[d]=(byDate[d]||0)+Math.round(i.eur*fxRate);});
+  var el=document.getElementById('exp-date-chart');
+  if(!el)return;
+  var keys=Object.keys(byDate);
+  if(!keys.length){el.innerHTML='<div class="date-chart-wrap" style="text-align:center;color:var(--text3);padding:20px;">날짜별 지출이 없어요<br><span style="font-size:11px;">지출 추가 시 날짜를 입력하세요</span></div>';return;}
+  var max=Math.max.apply(null,Object.values(byDate));
+  el.innerHTML='<div class="date-chart-wrap">'+
+    '<div class="date-bars">'+keys.map(function(d){
+      var h=Math.round(byDate[d]/max*90);
+      return'<div class="date-bar-col">'+
+        '<div style="font-size:9px;color:var(--navy2);font-weight:700;">₩'+(byDate[d]>=10000?Math.round(byDate[d]/10000)+'만':''+byDate[d])+'</div>'+
+        '<div class="date-bar" style="height:'+h+'px;"></div>'+
+        '<div class="date-bar-lbl">'+d.replace(/^\d{4}\./,'').trim()+'</div>'+
+      '</div>';
+    }).join('')+
+    '</div>'+
+  '</div>';
+}
+
+function addExp(){
+  var cat=document.getElementById('m-e-cat').value,name=document.getElementById('m-e-name').value.trim(),eur=parseFloat(document.getElementById('m-e-eur').value)||0;
+  var date=document.getElementById('m-e-date').value;
+  if(!name||!eur)return;
+  if(!exps[currentTrip])exps[currentTrip]=[];
+  exps[currentTrip].push({cat:cat,name:name,eur:eur,date:date||''});
+  saveAll();closeM('modal-exp');
+  document.getElementById('m-e-name').value='';document.getElementById('m-e-eur').value='';document.getElementById('m-e-date').value='';document.getElementById('exp-preview').textContent='';
+  renderExpense();
+}
 
 /* ── EMERGENCY ── */
 function renderEmergency(){var icons=['🏛','🚨','👮','💳','🏥','📞'];document.getElementById('emg-list').innerHTML=(emgs[currentTrip]||[]).map(function(e,i){return'<div class="emg-card"><div class="emg-icon-wrap">'+icons[i%icons.length]+'</div><div class="emg-body"><div class="emg-name">'+e.name+'</div><div class="emg-tel">'+e.tel+'</div>'+(e.note?'<div class="emg-note">'+e.note+'</div>':'')+'</div><button class="call-btn" onclick="window.location=\'tel:'+e.tel+'\'">전화</button></div>';}).join('');}
@@ -963,7 +1133,7 @@ function dismissBanner(){localStorage.setItem('mt_banner','1');document.getEleme
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone&&!localStorage.getItem('mt_banner')){setTimeout(function(){document.getElementById('install-banner').classList.add('show');},2500);}
 
 /* ── RENDER ALL ── */
-function renderAll(){renderChecklist();renderItinerary();renderExpense();renderEmergency();renderPhotos();renderBucket();}
+function renderAll(){renderChecklist();renderItinerary();renderExpense();renderEmergency();renderPhotos();renderBucket();renderFxUI();}
 
 if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
 ensureDefaults();
