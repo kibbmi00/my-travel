@@ -549,6 +549,66 @@ var currentBucketFilter='전체';
 
 function saveAll(){sv('mt_trips',trips);sv('mt_checks',checks);sv('mt_itin',itin);sv('mt_exps',exps);sv('mt_emgs',emgs);sv('mt_photos',photos);sv('mt_spots',spots);}
 
+/* ── 기본 데이터 보장 (이탈리아가 없으면 자동 추가) ── */
+function ensureDefaults(){
+  if(!trips.find(function(t){return t.id==='italy';})){
+    trips.unshift({id:'italy',name:'이탈리아',emoji:'🇮🇹',dates:'2024 · 12박 13일'});
+  }
+  if(!checks['italy']||checks['italy'].length===0){
+    checks['italy']=[
+      {id:1,cat:'항공/숙소',label:'항공권 예매 확인',done:false,alarm:'2024-12-01'},
+      {id:2,cat:'항공/숙소',label:'호텔 예약 확인',done:false,alarm:''},
+      {id:3,cat:'서류/비자',label:'여권 유효기간 확인 (6개월 이상)',done:true,alarm:''},
+      {id:4,cat:'서류/비자',label:'여행자 보험 가입',done:false,alarm:'2024-12-05'},
+      {id:5,cat:'짐 챙기기',label:'충전기 & 멀티어댑터',done:false,alarm:''},
+      {id:6,cat:'짐 챙기기',label:'상비약 챙기기',done:false,alarm:''},
+      {id:7,cat:'현지 준비',label:'유로 환전',done:false,alarm:'2024-12-10'},
+      {id:8,cat:'현지 준비',label:'구글맵 오프라인 저장',done:false,alarm:''},
+    ];
+  }
+  if(!itin['italy']||Object.keys(itin['italy']).length===0){
+    itin['italy']={
+      'Day 1':{theme:'로마 고대 유적',places:[
+        {name:'로마 콜로세움',arrive:'09:00',stay:'1시간 30분',hours:'09:00-19:00',fee:'€16',note:'온라인 사전예약 필수',transit:{method:'',time:'',tip:''}},
+        {name:'포로 로마노',arrive:'11:00',stay:'1시간',hours:'09:00-19:00',fee:'€16 (통합권)',note:'',transit:{method:'도보',time:'5분',tip:'약 350m'}},
+        {name:'판테온',arrive:'14:00',stay:'1시간',hours:'09:00-18:00',fee:'€5',note:'월요일 무료입장',transit:{method:'도보',time:'15분',tip:'약 1.2km'}},
+        {name:'트레비 분수',arrive:'16:30',stay:'30분',hours:'연중무휴',fee:'무료',note:'오후 늦게 방문 추천',transit:{method:'도보',time:'8분',tip:'약 600m'}},
+      ]},
+      'Day 2':{theme:'바티칸 & 성 베드로',places:[
+        {name:'바티칸 박물관',arrive:'08:30',stay:'3시간',hours:'09:00-18:00',fee:'€20',note:'사전예약 필수',transit:{method:'지하철',time:'25분',tip:'A선 Ottaviano역'}},
+        {name:'시스티나 성당',arrive:'11:30',stay:'1시간',hours:'박물관 내 포함',fee:'통합권',note:'사진 촬영 금지',transit:{method:'도보',time:'5분',tip:'박물관 내부'}},
+        {name:'성 베드로 대성당',arrive:'14:00',stay:'2시간',hours:'07:00-19:00',fee:'무료',note:'반바지·민소매 입장 불가',transit:{method:'도보',time:'10분',tip:'약 800m'}},
+      ]},
+      'Day 3':{theme:'피렌체 미술 & 건축',places:[
+        {name:'피렌체 도착',arrive:'08:15',stay:'-',hours:'-',fee:'기차 €25',note:'로마 테르미니→피렌체 SMN',transit:{method:'기차',time:'1시간 35분',tip:'FR 9600'}},
+        {name:'우피치 미술관',arrive:'09:30',stay:'2시간 30분',hours:'08:15-18:50',fee:'€25',note:'보티첼리 비너스의 탄생 필수',transit:{method:'도보',time:'5분',tip:'역에서 도보'}},
+        {name:'베키오 다리',arrive:'12:30',stay:'30분',hours:'연중무휴',fee:'무료',note:'금세공품 쇼핑거리',transit:{method:'도보',time:'8분',tip:'약 600m'}},
+        {name:'두오모 대성당',arrive:'14:30',stay:'1시간 30분',hours:'10:00-17:00',fee:'쿠폴라 €18',note:'쿠폴라 전망 강력 추천',transit:{method:'도보',time:'12분',tip:'약 900m'}},
+      ]},
+    };
+  }
+  if(!exps['italy']||exps['italy'].length===0){
+    exps['italy']=[{cat:'식사',name:'나폴리 피자',eur:14},{cat:'교통',name:'로마 지하철 1일권',eur:7},{cat:'관광',name:'콜로세움 입장',eur:16}];
+  }
+  if(!emgs['italy']||emgs['italy'].length===0){
+    emgs['italy']=[
+      {name:'주이탈리아 한국대사관',tel:'+39-06-802461',note:'로마 · 긴급여권 발급'},
+      {name:'이탈리아 긴급신고',tel:'112',note:'경찰/소방/구급 통합'},
+      {name:'관광경찰 (영어가능)',tel:'+39-06-46861',note:'로마 관광경찰서'},
+      {name:'KB국민카드 분실',tel:'+82-2-6300-7300',note:'국제전화 선택'},
+    ];
+  }
+  if(!photos['italy'])photos['italy']=[];
+  if(!spots['italy']||spots['italy'].length===0){
+    spots['italy']=[
+      {id:1,cat:'맛집',city:'로마',area:'트라스테베레',name:'Da Enzo al 29',hours:'12:30-15:00, 19:30-23:00',query:'Da Enzo al 29 Roma',rating:4.7,note:'현지인 추천 까르보나라',img:'',visited:false},
+      {id:2,cat:'카페',city:'로마',area:'나보나 광장 근처',name:'Sant\'Eustachio il Caffè',hours:'07:30-01:00',query:'Sant Eustachio il Caffe Roma',rating:4.6,note:'로마 최고 에스프레소',img:'',visited:false},
+      {id:3,cat:'디저트',city:'피렌체',area:'산타 크로체',name:'Gelateria dei Neri',hours:'11:00-00:00',query:'Gelateria dei Neri Firenze',rating:4.5,note:'피스타치오 & 리코타 필수',img:'',visited:false},
+    ];
+  }
+  saveAll();
+}
+
 /* ── NAVIGATION ── */
 function goHome(){
   document.getElementById('screen-home').classList.add('active');
@@ -752,6 +812,7 @@ if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone&&
 function renderAll(){renderChecklist();renderItinerary();renderExpense();renderEmergency();renderPhotos();renderBucket();}
 
 if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
+ensureDefaults();
 fetchFx();
 renderHome();
 </script>

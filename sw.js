@@ -1,8 +1,6 @@
-const CACHE = 'mytravel-v1';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const CACHE = 'mytravel-v3';
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
   self.skipWaiting();
 });
 
@@ -14,12 +12,14 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.url.includes('frankfurter.app')) return;
+  if (e.request.url.includes('frankfurter.app') ||
+      e.request.url.includes('fonts.googleapis.com') ||
+      e.request.url.includes('fonts.gstatic.com')) return;
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+    fetch(e.request).then(res => {
       const clone = res.clone();
       caches.open(CACHE).then(c => c.put(e.request, clone));
       return res;
-    }).catch(() => caches.match('./index.html')))
+    }).catch(() => caches.match(e.request))
   );
 });
