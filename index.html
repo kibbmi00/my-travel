@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="My Travel">
-<meta name="theme-color" content="#0ea5e9">
+<meta name="theme-color" content="#38bdf8">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>My Travel</title>
@@ -15,11 +15,11 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --accent:#0ea5e9;--accent-dark:#0369a1;--accent-light:rgba(14,165,233,0.12);
-  --bg:#f0f9ff;--bg2:#ffffff;--bg3:#e0f2fe;
-  --card:#ffffff;
-  --text:#0c4a6e;--text2:#0369a1;--text3:#7dd3fc;
-  --border:rgba(14,165,233,0.18);--border2:rgba(14,165,233,0.35);
+  --accent:#38bdf8;--accent-dark:#0284c7;--accent-light:rgba(56,189,248,0.13);
+  --bg:#0d1b2e;--bg2:#102038;--bg3:#152847;
+  --card:#162440;
+  --text:#f0f8ff;--text2:#a8d4f0;--text3:#4a7fa8;
+  --border:rgba(56,189,248,0.15);--border2:rgba(56,189,248,0.32);
   --serif:'Playfair Display',serif;--sans:'Noto Sans KR',sans-serif;
   --r:12px;--r2:8px;--r3:20px;
   --safe-top:env(safe-area-inset-top,0px);
@@ -146,7 +146,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 .card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:8px;}
 
 /* MODALS */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(12,74,110,.45);z-index:200;align-items:flex-end;justify-content:center;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,25,45,.65);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-bg.show{display:flex;}
 .modal-box{background:var(--bg2);border-radius:var(--r) var(--r) 0 0;padding:18px 16px calc(var(--safe-bot)+16px);width:100%;max-width:480px;max-height:88vh;overflow-y:auto;border-top:0.5px solid var(--border2);}
 .modal-box::-webkit-scrollbar{display:none;}
@@ -162,7 +162,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 .btn-ok{background:var(--accent);border:none;color:#fff;}
 
 /* VIEWER */
-.viewer{display:none;position:fixed;inset:0;background:rgba(12,74,110,.95);z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:16px;}
+.viewer{display:none;position:fixed;inset:0;background:rgba(10,25,45,.97);z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:16px;}
 .viewer.show{display:flex;}
 .viewer-close{position:absolute;top:calc(var(--safe-top)+12px);right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .viewer img{max-width:100%;max-height:68vh;border-radius:var(--r);object-fit:contain;}
@@ -172,7 +172,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 .viewer-del{margin-top:10px;padding:6px 18px;border-radius:var(--r3);background:rgba(220,38,38,.55);color:#fff;border:none;font-size:13px;font-family:var(--sans);cursor:pointer;}
 
 /* NAME PROMPT */
-.name-prompt{display:none;position:fixed;inset:0;background:rgba(12,74,110,.75);z-index:400;align-items:center;justify-content:center;padding:20px;}
+.name-prompt{display:none;position:fixed;inset:0;background:rgba(10,25,45,.85);z-index:400;align-items:center;justify-content:center;padding:20px;}
 .name-prompt.show{display:flex;}
 .name-box{background:var(--bg2);border-radius:var(--r);padding:22px 18px;width:100%;max-width:300px;text-align:center;border:0.5px solid var(--border2);}
 .name-emoji{font-size:32px;margin-bottom:8px;}

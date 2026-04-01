@@ -4,8 +4,8 @@
   "description": "나만의 여행 플래너 - 일정, 환율, 지출, 가족 사진 공유",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f0f9ff",
-  "theme_color": "#0ea5e9",
+  "background_color": "#0d1b2e",
+  "theme_color": "#38bdf8",
   "orientation": "portrait",
   "icons": [
     {
