@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="My Travel">
@@ -34,18 +34,18 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .screen.active{display:block;}
 
 /* ── HOME SCREEN ───────────────────────────────── */
-.home-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);padding:calc(var(--safe-top)+20px) 20px 28px;color:#fff;}
-.home-greeting{font-size:13px;opacity:.75;margin-bottom:4px;}
-.home-title{font-size:26px;font-weight:800;line-height:1.2;}
+.home-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);padding:calc(var(--safe-top)+28px) 22px 32px;color:#fff;}
+.home-greeting{font-size:13px;opacity:.75;margin-bottom:6px;}
+.home-title{font-size:28px;font-weight:800;line-height:1.3;}
 .home-title span{color:#9fa8da;}
 .home-search{margin-top:16px;background:rgba(255,255,255,.15);border-radius:var(--r3);padding:10px 16px;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:13px;}
-.home-body{padding:20px 16px calc(var(--safe-bot)+20px);}
-.home-section-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;}
-.trip-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;display:flex;cursor:pointer;transition:transform .15s;}
+.home-body{padding:24px 20px calc(var(--safe-bot)+30px);}
+.home-section-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;}
+.trip-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;display:flex;cursor:pointer;transition:transform .15s;}
 .trip-card:active{transform:scale(.98);}
-.trip-card-img{width:90px;flex-shrink:0;background:linear-gradient(135deg,var(--navy2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:36px;}
-.trip-card-body{flex:1;padding:14px 14px 12px;}
-.trip-card-name{font-size:17px;font-weight:800;color:var(--text);margin-bottom:2px;}
+.trip-card-img{width:96px;flex-shrink:0;background:linear-gradient(135deg,var(--navy2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:36px;}
+.trip-card-body{flex:1;padding:16px 16px 14px;}
+.trip-card-name{font-size:18px;font-weight:800;color:var(--text);margin-bottom:2px;}
 .trip-card-dates{font-size:12px;color:var(--text3);margin-bottom:8px;}
 .trip-card-badges{display:flex;gap:6px;flex-wrap:wrap;}
 .badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--r3);}
@@ -58,19 +58,19 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .add-trip-sub{font-size:12px;color:var(--text3);}
 
 /* ── TRIP DETAIL (inner tabs) ──────────────────── */
-.detail-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);padding:calc(var(--safe-top)+12px) 16px 0;color:#fff;}
+.detail-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);padding:calc(var(--safe-top)+16px) 20px 0;color:#fff;}
 .detail-back{display:flex;align-items:center;gap:6px;font-size:13px;opacity:.8;margin-bottom:10px;cursor:pointer;background:none;border:none;color:#fff;font-family:var(--sans);}
-.detail-trip-name{font-size:22px;font-weight:800;margin-bottom:2px;}
-.detail-trip-dates{font-size:12px;opacity:.7;margin-bottom:14px;}
+.detail-trip-name{font-size:24px;font-weight:800;margin-bottom:4px;}
+.detail-trip-dates{font-size:12px;opacity:.7;margin-bottom:16px;}
 .inner-tabs{display:flex;gap:0;overflow-x:auto;padding-bottom:0;}
 .inner-tabs::-webkit-scrollbar{display:none;}
-.inner-tab{flex-shrink:0;padding:10px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);border:none;background:transparent;cursor:pointer;font-family:var(--sans);border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;}
+.inner-tab{flex-shrink:0;padding:12px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);border:none;background:transparent;cursor:pointer;font-family:var(--sans);border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;}
 .inner-tab.active{color:#fff;border-bottom-color:#fff;}
-.tab-content{display:none;padding:16px 16px calc(var(--safe-bot)+24px);}
+.tab-content{display:none;padding:20px 20px calc(var(--safe-bot)+30px);}
 .tab-content.active{display:block;}
 
 /* ── CHECKLIST ─────────────────────────────────── */
-.prog-wrap{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:14px;}
+.prog-wrap{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:16px;}
 .prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .prog-label{font-size:13px;font-weight:700;color:var(--text);}
 .prog-pct{font-size:13px;font-weight:700;color:var(--navy2);}
@@ -108,7 +108,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .sch-body{flex:1;padding:12px 14px 12px 8px;}
 .sch-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
 .sch-icon{font-size:16px;}
-.sch-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
+.sch-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
 .sch-chip{font-size:10px;font-weight:600;padding:2px 7px;border-radius:var(--r3);background:var(--off2);color:var(--navy2);}
 .sch-note{font-size:11px;color:var(--text3);margin-top:3px;}
 .sch-map{font-size:11px;font-weight:700;color:var(--navy2);margin-top:5px;background:none;border:none;cursor:pointer;font-family:var(--sans);padding:0;}
@@ -119,7 +119,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 /* ── CURRENCY ──────────────────────────────────── */
 .fx-hero{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:20px;margin-bottom:14px;color:#fff;}
 .fx-rate-big{font-size:32px;font-weight:800;margin-bottom:2px;}
-.fx-rate-sub{font-size:12px;opacity:.7;margin-bottom:14px;}
+.fx-rate-sub{font-size:12px;opacity:.7;margin-bottom:16px;}
 .fx-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fx-field label{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);display:block;margin-bottom:5px;}
 .fx-inp{width:100%;padding:10px 12px;border-radius:var(--r2);border:none;background:rgba(255,255,255,.18);color:#fff;font-size:18px;font-weight:700;font-family:var(--sans);}
@@ -133,7 +133,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 
 /* ── EXPENSE ───────────────────────────────────── */
 .exp-hero{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:18px 20px;margin-bottom:14px;color:#fff;display:flex;justify-content:space-between;align-items:center;}
-.exp-total-lbl{font-size:12px;opacity:.7;margin-bottom:4px;}
+.exp-total-lbl{font-size:12px;opacity:.7;margin-bottom:6px;}
 .exp-total-amt{font-size:28px;font-weight:800;}
 .exp-eur-lbl{font-size:12px;opacity:.7;text-align:right;margin-bottom:2px;}
 .exp-eur-amt{font-size:16px;font-weight:700;text-align:right;}
@@ -157,7 +157,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .call-btn{padding:8px 14px;border-radius:var(--r3);background:var(--navy2);color:#fff;border:none;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;flex-shrink:0;}
 
 /* ── PHOTOS ────────────────────────────────────── */
-.share-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px;}
+.share-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:16px;}
 .share-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
 .share-sub{font-size:11px;color:var(--text3);margin-bottom:8px;}
 .link-row{display:flex;gap:6px;}
@@ -223,7 +223,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .modal-box{background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(var(--safe-bot)+18px);width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
 .modal-box::-webkit-scrollbar{display:none;}
 .modal-handle{width:36px;height:4px;background:var(--off2);border-radius:2px;margin:0 auto 16px;}
-.modal-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:14px;}
+.modal-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px;}
 .modal-lbl{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:.5px;}
 .modal-inp,.modal-sel{width:100%;padding:11px 13px;border-radius:var(--r2);border:2px solid var(--off2);background:var(--off);color:var(--text);font-size:14px;font-weight:600;font-family:var(--sans);}
 .modal-inp:focus,.modal-sel:focus{outline:none;border-color:var(--navy2);}
@@ -249,7 +249,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .name-prompt.show{display:flex;}
 .name-box{background:#fff;border-radius:24px;padding:24px 20px;width:100%;max-width:300px;text-align:center;}
 .name-emoji{font-size:36px;margin-bottom:10px;}
-.name-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:5px;}
+.name-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:5px;}
 .name-desc{font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.5;font-weight:600;}
 .name-inp{width:100%;padding:11px;border-radius:var(--r2);border:2px solid var(--off2);background:var(--off);color:var(--text);font-size:16px;font-weight:700;font-family:var(--sans);margin-bottom:10px;text-align:center;}
 .name-inp:focus{outline:none;border-color:var(--navy2);}
@@ -592,6 +592,7 @@ function renderHome(){
           '<span class="badge badge-blue">일정 '+days+'일</span>' +
           '<span class="badge '+(pct===100?'badge-green':'badge-amber')+'">준비 '+pct+'%</span>' +
         '</div>' +
+        '<button class="trip-card-edit" onclick="event.stopPropagation();openEditTrip(\''+t.id+'\')">✏️ 수정</button>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -701,7 +702,44 @@ function addSpot(){var name=document.getElementById('m-s-name').value.trim();if(
 /* ── TRIPS ── */
 function addTrip(){var emoji=document.getElementById('m-t-country').value.trim()||'✈️',name=document.getElementById('m-t-name').value.trim();if(!name)return;var dates=document.getElementById('m-t-dates').value.trim(),id='trip_'+Date.now();trips.push({id:id,name:name,emoji:emoji,dates:dates});checks[id]=[];itin[id]={};exps[id]=[];emgs[id]=[];photos[id]=[];spots[id]=[];saveAll();closeM('modal-trip');['m-t-country','m-t-name','m-t-dates'].forEach(function(i){document.getElementById(i).value='';});renderHome();}
 
-/* ── MODALS ── */
+var editingTripId=null;
+function openEditTrip(id){
+  editingTripId=id;
+  var t=trips.find(function(x){return x.id===id;});if(!t)return;
+  document.getElementById('m-e-t-country').value=t.emoji||'';
+  document.getElementById('m-e-t-name').value=t.name||'';
+  document.getElementById('m-e-t-dates').value=t.dates||'';
+  document.getElementById('modal-edit-trip').classList.add('show');
+}
+function saveEditTrip(){
+  var t=trips.find(function(x){return x.id===editingTripId;});if(!t)return;
+  var emoji=document.getElementById('m-e-t-country').value.trim()||t.emoji;
+  var name=document.getElementById('m-e-t-name').value.trim();
+  var dates=document.getElementById('m-e-t-dates').value.trim();
+  if(!name)return;
+  t.emoji=emoji;t.name=name;t.dates=dates;
+  saveAll();closeM('modal-edit-trip');renderHome();
+}
+function deleteTrip(){
+  if(!confirm('이 여행을 삭제할까요?\n(모든 데이터가 삭제돼요)'))return;
+  trips=trips.filter(function(x){return x.id!==editingTripId;});
+  delete checks[editingTripId];delete itin[editingTripId];delete exps[editingTripId];
+  delete emgs[editingTripId];delete photos[editingTripId];delete spots[editingTripId];
+  saveAll();closeM('modal-edit-trip');renderHome();
+}
+
+<div class="modal-bg" id="modal-edit-trip"><div class="modal-box">
+  <div class="modal-handle"></div>
+  <div class="modal-title">여행 정보 수정</div>
+  <div class="modal-lbl">국가 (이모지 포함)</div><input class="modal-inp" id="m-e-t-country" placeholder="예: 🇮🇹 이탈리아">
+  <div class="modal-lbl">여행 이름</div><input class="modal-inp" id="m-e-t-name" placeholder="예: 이탈리아 여행">
+  <div class="modal-lbl">기간</div><input class="modal-inp" id="m-e-t-dates" placeholder="예: 2024 · 12박 13일">
+  <div class="modal-btns">
+    <button class="btn-c" onclick="closeM('modal-edit-trip')">취소</button>
+    <button style="flex:1;padding:12px;border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--sans);cursor:pointer;background:#ffebee;border:none;color:#c62828;" onclick="deleteTrip()">삭제</button>
+    <button class="btn-ok" onclick="saveEditTrip()">저장</button>
+  </div>
+</div></div>
 function openM(id){if(id==='modal-place'){var days=Object.keys(itin[currentTrip]||{});document.getElementById('m-p-day').innerHTML=days.map(function(d){return'<option value="'+d+'">'+d+'</option>';}).join('')||'<option value="Day 1">Day 1</option>';}document.getElementById(id).classList.add('show');}
 function closeM(id){document.getElementById(id).classList.remove('show');}
 document.querySelectorAll('.modal-bg').forEach(function(bg){bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('show');});});
