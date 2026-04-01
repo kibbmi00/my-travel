@@ -24,9 +24,9 @@
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
 }
-html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans);font-size:14px;}
-.app{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:600px;margin:0 auto;}
-.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--off);}
+html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans);font-size:14px;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:600px;margin:0 auto;background:var(--off);}
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--off);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);}
 .scroll-area::-webkit-scrollbar{display:none;}
 
 /* SCREENS */
@@ -38,7 +38,7 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .home-greeting{font-size:14px;opacity:.75;margin-bottom:8px;}
 .home-title{font-size:30px;font-weight:800;line-height:1.35;}
 .home-title span{color:#9fa8da;}
-.home-body{padding:24px 20px calc(var(--safe-bot)+40px);}
+.home-body{padding:24px 18px calc(var(--safe-bot)+40px);}
 .home-section-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;}
 .trip-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;display:flex;cursor:pointer;transition:transform .15s;}
 .trip-card:active{transform:scale(.98);}
@@ -693,7 +693,9 @@ function renderChecklist(){
     items.filter(function(i){return i.cat===cat;}).forEach(function(item){
       html+='<div class="check-row'+(item.done?' done':'')+'" onclick="toggleCheck('+item.id+')">'+
         '<div class="chkbox'+(item.done?' on':'')+'"><div class="chkmark"></div></div>'+
-        '<div style="flex:1"><div class="check-label">'+item.label+'</div>'+(item.alarm?'<div class="check-alarm-txt">⏰ '+item.alarm+'</div>':'')+'</div>'+
+        '<div style="flex:1"><div class="check-label">'+item.label+'</div>'+
+          (item.alarm?'<div class="check-alarm-txt" onclick="event.stopPropagation();setAlarm('+item.id+')" style="cursor:pointer;display:inline-block;">⏰ '+item.alarm+' ✏️</div>':'')+
+        '</div>'+
         '<button class="alarm-tag'+(item.alarm?' on':'')+'" onclick="event.stopPropagation();setAlarm('+item.id+')">'+(item.alarm?'알람 on':'알람')+'</button>'+
       '</div>';
     });
@@ -752,9 +754,31 @@ function formatDayLabel(dayKey){
   return m+'/'+day+' ('+wd+')';
 }
 
-function getUnsplashUrl(placeName){
-  var keywords=placeName.replace(/\s+/g,',');
-  return 'https://source.unsplash.com/400x200/?'+encodeURIComponent(keywords)+',travel';
+function getPlaceImgUrl(placeName){
+  return 'https://source.unsplash.com/480x200/?'+encodeURIComponent(placeName.replace(/\s+/g,',')+',landmark,travel');
+}
+
+async function loadPlaceImg(imgEl, placeName){
+  var query=placeName.replace(/\s+/g,'%20');
+  try{
+    var r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(placeName),{signal:AbortSignal.timeout(4000)});
+    var d=await r.json();
+    if(d.thumbnail&&d.thumbnail.source){
+      imgEl.src=d.thumbnail.source;
+      imgEl.style.display='block';
+      return;
+    }
+  }catch(e){}
+  try{
+    var r2=await fetch('https://ko.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(placeName),{signal:AbortSignal.timeout(4000)});
+    var d2=await r2.json();
+    if(d2.thumbnail&&d2.thumbnail.source){
+      imgEl.src=d2.thumbnail.source;
+      imgEl.style.display='block';
+      return;
+    }
+  }catch(e){}
+  imgEl.style.display='none';
 }
 
 function renderItinerary(){
@@ -784,7 +808,7 @@ function renderItinerary(){
   (data.places||[]).forEach(function(p,idx){
     var mapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name);
     var isLast=idx===(data.places.length-1);
-    var imgUrl=getUnsplashUrl(p.name);
+    var imgId='sch-img-'+idx;
     if(p.transit&&p.transit.method){
       var col=TC[p.transit.method]||'#888';
       html+='<div class="transit-row">'+
@@ -797,7 +821,7 @@ function renderItinerary(){
       '<div class="sch-dot-col"><div class="sch-dot"></div>'+(isLast?'':'<div class="sch-line"></div>')+'</div>'+
       '<div class="sch-body">'+
         '<div class="sch-name"><span class="sch-icon">'+gi(p.name)+'</span>'+p.name+'</div>'+
-        '<img class="sch-img" src="'+imgUrl+'" alt="'+p.name+'" loading="lazy" onerror="this.style.display=\'none\'">'+
+        '<img id="'+imgId+'" class="sch-img" src="" alt="'+p.name+'" style="display:none;">'+
         '<div class="sch-chips">'+
           (p.stay&&p.stay!=='-'?'<span class="sch-chip">⏱ '+p.stay+'</span>':'')+
           (p.hours&&p.hours!=='-'?'<span class="sch-chip">'+p.hours+'</span>':'')+
@@ -810,6 +834,10 @@ function renderItinerary(){
   });
   html+='</div>';
   document.getElementById('itin-body').innerHTML=html;
+  (data.places||[]).forEach(function(p,idx){
+    var imgEl=document.getElementById('sch-img-'+idx);
+    if(imgEl) loadPlaceImg(imgEl, p.name);
+  });
 }
 function selDay(d){currentDay=d;renderItinerary();}
 function addNewDay(){var n=prompt('새 Day 이름 (예: Day 4)');if(!n)return;var th=prompt('테마','');if(!itin[currentTrip])itin[currentTrip]={};itin[currentTrip][n]={theme:th||n,places:[]};currentDay=n;saveAll();renderItinerary();}
