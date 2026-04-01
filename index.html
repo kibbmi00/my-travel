@@ -24,8 +24,8 @@
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
 }
-html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans);font-size:14px;overflow:hidden;}
-.app{display:flex;flex-direction:column;height:100%;height:100dvh;}
+html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans);font-size:14px;}
+.app{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:600px;margin:0 auto;}
 .scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--off);}
 .scroll-area::-webkit-scrollbar{display:none;}
 
@@ -59,15 +59,15 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 .add-trip-sub{font-size:12px;color:var(--text3);margin-top:3px;}
 
 /* ── DATE PICKER MODAL ─────────────────────────── */
-.date-modal{display:none;position:fixed;inset:0;background:rgba(26,35,126,.5);z-index:300;align-items:flex-end;justify-content:center;}
+.date-modal{display:none;position:fixed;inset:0;background:rgba(26,35,126,.55);z-index:300;align-items:center;justify-content:center;padding:20px;}
 .date-modal.show{display:flex;}
-.date-modal-box{background:#fff;border-radius:24px 24px 0 0;padding:24px 22px calc(var(--safe-bot)+24px);width:100%;max-width:480px;}
+.date-modal-box{background:#fff;border-radius:24px;padding:26px 22px;width:100%;max-width:400px;}
 .date-modal-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:18px;}
 .date-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
 .date-field label{font-size:11px;font-weight:700;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
-.date-field input{width:100%;padding:11px 13px;border-radius:var(--r2);border:2px solid var(--off2);background:var(--off);color:var(--text);font-size:15px;font-weight:700;font-family:var(--sans);}
+.date-field input{width:100%;padding:11px 13px;border-radius:var(--r2);border:2px solid var(--off2);background:var(--off);color:var(--text);font-size:14px;font-weight:700;font-family:var(--sans);}
 .date-field input:focus{outline:none;border-color:var(--navy2);}
-.date-calc{background:var(--off2);border-radius:var(--r2);padding:12px 16px;text-align:center;margin-bottom:16px;font-size:15px;font-weight:700;color:var(--navy2);min-height:44px;display:flex;align-items:center;justify-content:center;}
+.date-calc{background:var(--off2);border-radius:var(--r2);padding:14px 16px;text-align:center;margin-bottom:16px;font-size:15px;font-weight:700;color:var(--navy2);min-height:52px;display:flex;align-items:center;justify-content:center;white-space:pre-line;line-height:1.5;}
 .date-btns{display:flex;gap:8px;}
 .date-btns button{flex:1;padding:12px;border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--sans);cursor:pointer;}
 
@@ -106,26 +106,30 @@ html,body{height:100%;background:var(--off);color:var(--text);font-family:var(--
 /* ── SCHEDULE (itinerary) ──────────────────────── */
 .day-scroller{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;}
 .day-scroller::-webkit-scrollbar{display:none;}
-.day-tab{padding:6px 16px;border-radius:var(--r3);border:2px solid var(--off2);font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;background:var(--card);color:var(--text3);font-family:var(--sans);transition:all .15s;}
+.day-tab{padding:6px 14px;border-radius:var(--r3);border:2px solid var(--off2);font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer;background:var(--card);color:var(--text3);font-family:var(--sans);transition:all .15s;line-height:1.4;text-align:center;}
 .day-tab.active{background:var(--navy2);border-color:var(--navy2);color:#fff;}
-.day-head-card{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:14px 16px;margin-bottom:14px;color:#fff;}
-.day-head-date{font-size:12px;opacity:.75;margin-bottom:2px;}
-.day-head-theme{font-size:18px;font-weight:800;}
+.day-tab-day{display:block;font-size:13px;}
+.day-tab-date{display:block;font-size:10px;opacity:.75;}
+.day-head-card{background:linear-gradient(135deg,var(--navy2),var(--accent));border-radius:var(--r);padding:16px 18px;margin-bottom:16px;color:#fff;}
+.day-head-label{font-size:12px;opacity:.7;margin-bottom:2px;}
+.day-head-date{font-size:15px;font-weight:700;margin-bottom:3px;}
+.day-head-theme{font-size:20px;font-weight:800;}
 .schedule-list{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:10px;}
 .sch-item{display:flex;gap:0;border-bottom:1px solid var(--off);}
 .sch-item:last-child{border-bottom:none;}
-.sch-time-col{width:62px;flex-shrink:0;padding:14px 0 14px 14px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;}
+.sch-time-col{width:58px;flex-shrink:0;padding:14px 0 14px 12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;}
 .sch-time{font-size:14px;font-weight:800;color:var(--navy2);}
-.sch-dot-col{width:24px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:16px;}
+.sch-dot-col{width:22px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:16px;}
 .sch-dot{width:10px;height:10px;border-radius:50%;background:var(--navy2);flex-shrink:0;}
 .sch-line{width:2px;flex:1;background:var(--off2);margin-top:4px;}
-.sch-body{flex:1;padding:12px 14px 12px 8px;}
-.sch-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.sch-body{flex:1;padding:10px 12px 10px 6px;}
+.sch-img{width:100%;height:120px;object-fit:cover;border-radius:var(--r2);margin-bottom:8px;background:var(--off2);}
+.sch-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:6px;}
 .sch-icon{font-size:16px;}
 .sch-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
 .sch-chip{font-size:10px;font-weight:600;padding:2px 7px;border-radius:var(--r3);background:var(--off2);color:var(--navy2);}
 .sch-note{font-size:11px;color:var(--text3);margin-top:3px;}
-.sch-map{font-size:11px;font-weight:700;color:var(--navy2);margin-top:5px;background:none;border:none;cursor:pointer;font-family:var(--sans);padding:0;}
+.sch-map{font-size:11px;font-weight:700;color:var(--navy2);margin-top:6px;background:none;border:none;cursor:pointer;font-family:var(--sans);padding:0;}
 .transit-row{display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--off);border-left:3px solid var(--off2);}
 .transit-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r3);color:#fff;}
 .transit-info{font-size:11px;color:var(--text3);}
@@ -697,21 +701,90 @@ function renderChecklist(){
   document.getElementById('checklist-body').innerHTML=html;
 }
 function toggleCheck(id){var it=(checks[currentTrip]||[]).find(function(i){return i.id===id;});if(it){it.done=!it.done;saveAll();renderChecklist();}}
-function setAlarm(id){var it=(checks[currentTrip]||[]).find(function(i){return i.id===id;});if(!it)return;var d=prompt('알람 날짜 (예: 2024-12-01)',it.alarm||'');if(d!==null){it.alarm=d;saveAll();renderChecklist();}}
+function setAlarm(id){
+  var it=(checks[currentTrip]||[]).find(function(i){return i.id===id;});
+  if(!it)return;
+  document.getElementById('alarm-date-inp').value=it.alarm||'';
+  document.getElementById('alarm-modal').classList.add('show');
+  document.getElementById('alarm-modal').setAttribute('data-id',id);
+}
+function saveAlarm(){
+  var id=parseInt(document.getElementById('alarm-modal').getAttribute('data-id'));
+  var val=document.getElementById('alarm-date-inp').value;
+  var it=(checks[currentTrip]||[]).find(function(i){return i.id===id;});
+  if(it){it.alarm=val;saveAll();renderChecklist();}
+  document.getElementById('alarm-modal').classList.remove('show');
+}
+function clearAlarm(){
+  var id=parseInt(document.getElementById('alarm-modal').getAttribute('data-id'));
+  var it=(checks[currentTrip]||[]).find(function(i){return i.id===id;});
+  if(it){it.alarm='';saveAll();renderChecklist();}
+  document.getElementById('alarm-modal').classList.remove('show');
+}
 function addCheck(){var cat=document.getElementById('m-c-cat').value,label=document.getElementById('m-c-label').value.trim(),alarm=document.getElementById('m-c-alarm').value;if(!label)return;if(!checks[currentTrip])checks[currentTrip]=[];checks[currentTrip].push({id:Date.now(),cat:cat,label:label,done:false,alarm:alarm});saveAll();closeM('modal-check');document.getElementById('m-c-label').value='';document.getElementById('m-c-alarm').value='';renderChecklist();}
 
 /* ── ITINERARY / SCHEDULE ── */
+var WEEKDAYS = ['일','월','화','수','목','금','토'];
+
+function getTripStartDate(){
+  var t=trips.find(function(x){return x.id===currentTrip;});
+  if(!t||!t.dates)return null;
+  var m=t.dates.match(/(\d{4})[.\s년-]+(\d{1,2})[.\s월-]+(\d{1,2})/);
+  if(!m)return null;
+  return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
+}
+
+function getDayDate(dayKey){
+  var start=getTripStartDate();
+  if(!start)return null;
+  var m=dayKey.match(/(\d+)/);
+  if(!m)return null;
+  var dayNum=parseInt(m[1])-1;
+  var d=new Date(start);
+  d.setDate(d.getDate()+dayNum);
+  return d;
+}
+
+function formatDayLabel(dayKey){
+  var d=getDayDate(dayKey);
+  if(!d)return dayKey;
+  var m=d.getMonth()+1,day=d.getDate(),wd=WEEKDAYS[d.getDay()];
+  return m+'/'+day+' ('+wd+')';
+}
+
+function getUnsplashUrl(placeName){
+  var keywords=placeName.replace(/\s+/g,',');
+  return 'https://source.unsplash.com/400x200/?'+encodeURIComponent(keywords)+',travel';
+}
+
 function renderItinerary(){
   var ti=itin[currentTrip]||{};var dks=Object.keys(ti);
   if(!dks.includes(currentDay)&&dks.length)currentDay=dks[0];
-  document.getElementById('day-scroller').innerHTML=dks.map(function(d){return'<button class="day-tab'+(d===currentDay?' active':'')+'" onclick="selDay(\''+d+'\')">'+d+'</button>';}).join('')+'<button class="day-tab" onclick="addNewDay()">+ Day</button>';
+
+  document.getElementById('day-scroller').innerHTML=dks.map(function(d){
+    var dateLabel=formatDayLabel(d);
+    return '<button class="day-tab'+(d===currentDay?' active':'')+'" onclick="selDay(\''+d+'\')">'+
+      '<span class="day-tab-day">'+d+'</span>'+
+      '<span class="day-tab-date">'+dateLabel+'</span>'+
+    '</button>';
+  }).join('')+'<button class="day-tab" onclick="addNewDay()"><span class="day-tab-day">+</span><span class="day-tab-date">Day 추가</span></button>';
+
   if(!dks.length){document.getElementById('itin-body').innerHTML='<div class="photo-empty">장소를 추가해보세요!</div>';return;}
   var data=ti[currentDay]||{theme:'',places:[]};
-  var html='<div class="day-head-card"><div class="day-head-date">'+currentDay+'</div><div class="day-head-theme">'+(data.theme||'')+'</div></div>';
+  var dayDate=getDayDate(currentDay);
+  var dayDateStr=dayDate?(dayDate.getFullYear()+'년 '+(dayDate.getMonth()+1)+'월 '+dayDate.getDate()+'일 ('+WEEKDAYS[dayDate.getDay()]+')'):'';
+
+  var html='<div class="day-head-card">'+
+    '<div class="day-head-label">'+currentDay+'</div>'+
+    (dayDateStr?'<div class="day-head-date">'+dayDateStr+'</div>':'')+
+    '<div class="day-head-theme">'+(data.theme||'')+'</div>'+
+  '</div>';
+
   html+='<div class="schedule-list">';
   (data.places||[]).forEach(function(p,idx){
-    var mapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+' 이탈리아');
+    var mapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name);
     var isLast=idx===(data.places.length-1);
+    var imgUrl=getUnsplashUrl(p.name);
     if(p.transit&&p.transit.method){
       var col=TC[p.transit.method]||'#888';
       html+='<div class="transit-row">'+
@@ -724,6 +797,7 @@ function renderItinerary(){
       '<div class="sch-dot-col"><div class="sch-dot"></div>'+(isLast?'':'<div class="sch-line"></div>')+'</div>'+
       '<div class="sch-body">'+
         '<div class="sch-name"><span class="sch-icon">'+gi(p.name)+'</span>'+p.name+'</div>'+
+        '<img class="sch-img" src="'+imgUrl+'" alt="'+p.name+'" loading="lazy" onerror="this.style.display=\'none\'">'+
         '<div class="sch-chips">'+
           (p.stay&&p.stay!=='-'?'<span class="sch-chip">⏱ '+p.stay+'</span>':'')+
           (p.hours&&p.hours!=='-'?'<span class="sch-chip">'+p.hours+'</span>':'')+
@@ -880,6 +954,20 @@ renderHome();
     <button class="btn-ok" onclick="saveEditTrip()">저장</button>
   </div>
 </div></div>
+
+<div class="date-modal" id="alarm-modal">
+  <div class="date-modal-box">
+    <div class="date-modal-title">⏰ 알람 날짜 설정</div>
+    <div class="date-fields" style="grid-template-columns:1fr;">
+      <div class="date-field"><label>알람 날짜</label><input type="date" id="alarm-date-inp"></div>
+    </div>
+    <div class="date-btns">
+      <button style="flex:1;padding:12px;border-radius:var(--r2);font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;background:var(--off);border:none;color:var(--text3);" onclick="clearAlarm()">알람 삭제</button>
+      <button style="flex:1;padding:12px;border-radius:var(--r2);font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;background:var(--off);border:none;color:var(--text3);" onclick="document.getElementById('alarm-modal').classList.remove('show')">취소</button>
+      <button style="flex:1;padding:12px;border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--sans);cursor:pointer;background:var(--navy2);border:none;color:#fff;" onclick="saveAlarm()">저장</button>
+    </div>
+  </div>
+</div>
 
 <div class="date-modal" id="date-modal">
   <div class="date-modal-box">
