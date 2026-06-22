@@ -137,6 +137,13 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
 .transit-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r3);color:#fff;}
 .transit-info{font-size:11px;color:var(--text3);}
 
+/* ── BOOKING ─────────────────────────────────── */
+.bk-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:var(--r3);display:inline-flex;align-items:center;gap:3px;}
+.bk-badge.confirmed{background:#e8f5e9;color:#2e7d32;}
+.bk-badge.pending{background:#fff8e1;color:#f57f17;}
+.bk-open-btn{font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--r2);border:1.5px solid var(--off2);background:transparent;color:var(--navy2);cursor:pointer;font-family:var(--sans);margin-top:6px;display:inline-block;}
+.bk-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:5px;}
+
 /* ── CURRENCY ──────────────────────────────────── */
 .fx-selector{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;}
 .fx-selector::-webkit-scrollbar{display:none;}
@@ -897,6 +904,11 @@ function renderItinerary(){
     var mapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name);
     var isLast=idx===(data.places.length-1);
     var imgId='sch-img-'+idx;
+    var bk=p.booking||{};
+    var bkBadge='';
+    if(bk.confirmed) bkBadge='<div class="bk-row"><span class="bk-badge confirmed">✓ 예약완료</span>'+(bk.memo?'<span style="font-size:11px;color:var(--text3);font-weight:600;">'+bk.memo+'</span>':'')+'</div>';
+    else if(bk.link||bk.memo) bkBadge='<div class="bk-row"><span class="bk-badge pending">⏳ 예약 미완료</span>'+(bk.memo?'<span style="font-size:11px;color:var(--text3);font-weight:600;">'+bk.memo+'</span>':'')+'</div>';
+    if(bk.link) bkBadge+='<button class="bk-open-btn" onclick="window.open(\''+bk.link+'\',\'_blank\')">예약 페이지 열기 →</button>';
     if(p.transit&&p.transit.method){
       var col=TC[p.transit.method]||'#888';
       html+='<div class="transit-row">'+
@@ -911,6 +923,7 @@ function renderItinerary(){
         '<div class="sch-name" style="justify-content:space-between;">'+
           '<span style="display:flex;align-items:center;gap:6px;"><span class="sch-icon">'+gi(p.name)+'</span>'+p.name+'</span>'+
           '<span style="display:flex;gap:4px;">'+
+            '<button onclick="openBookingModal(\''+currentDay+'\','+idx+')" style="background:'+(bk.confirmed?'#e8f5e9':bk.link||bk.memo?'#fff8e1':'var(--off2)')+';border:none;border-radius:var(--r2);padding:3px 8px;font-size:11px;font-weight:700;color:'+(bk.confirmed?'#2e7d32':bk.link||bk.memo?'#f57f17':'var(--navy2)')+';cursor:pointer;font-family:var(--sans);">🎫</button>'+
             '<button onclick="editPlace(\''+currentDay+'\','+idx+')" style="background:var(--off2);border:none;border-radius:var(--r2);padding:3px 8px;font-size:11px;font-weight:700;color:var(--navy2);cursor:pointer;font-family:var(--sans);">수정</button>'+
             '<button onclick="deletePlace(\''+currentDay+'\','+idx+')" style="background:#ffebee;border:none;border-radius:var(--r2);padding:3px 8px;font-size:11px;font-weight:700;color:#c62828;cursor:pointer;font-family:var(--sans);">삭제</button>'+
           '</span>'+
@@ -922,6 +935,7 @@ function renderItinerary(){
           (p.fee?'<span class="sch-chip">'+p.fee+'</span>':'')+
         '</div>'+
         (p.note?'<div class="sch-note">💡 '+p.note+'</div>':'')+
+        bkBadge+
         '<button class="sch-map" onclick="window.open(\''+mapUrl+'\',\'_blank\')">구글맵으로 보기 →</button>'+
       '</div>'+
     '</div>';
@@ -955,6 +969,35 @@ function deletePlace(day,idx){
 }
 
 var editingDay=null;var editingIdx=-1;
+var bookingDay=null,bookingIdx=-1,bkConfirmed=false;
+
+function openBookingModal(day,idx){
+  bookingDay=day;bookingIdx=idx;
+  var p=(itin[currentTrip][day]||{places:[]}).places[idx];if(!p)return;
+  var bk=p.booking||{link:'',memo:'',confirmed:false};
+  bkConfirmed=!!bk.confirmed;
+  document.getElementById('bk-place-name').textContent=p.name;
+  document.getElementById('bk-link').value=bk.link||'';
+  document.getElementById('bk-memo').value=bk.memo||'';
+  updateBkToggle();
+  updateBkLinkPreview(bk.link||'');
+  openM('modal-booking');
+}
+function toggleBkConfirmed(){bkConfirmed=!bkConfirmed;updateBkToggle();}
+function updateBkToggle(){
+  var tog=document.getElementById('bk-toggle'),knob=document.getElementById('bk-knob');
+  if(bkConfirmed){tog.style.background='var(--navy2)';knob.style.left='22px';}
+  else{tog.style.background='var(--off2)';knob.style.left='2px';}
+}
+function updateBkLinkPreview(url){var el=document.getElementById('bk-link-preview');if(el)el.style.display=url.trim()?'block':'none';}
+function openBkLink(){var url=document.getElementById('bk-link').value.trim();if(url)window.open(url,'_blank');}
+function saveBooking(){
+  var places=(itin[currentTrip][bookingDay]||{places:[]}).places;
+  var p=places[bookingIdx];if(!p)return;
+  p.booking={link:document.getElementById('bk-link').value.trim(),memo:document.getElementById('bk-memo').value.trim(),confirmed:bkConfirmed};
+  saveAll();closeM('modal-booking');renderItinerary();
+}
+
 function editPlace(day,idx){
   editingDay=day;editingIdx=idx;
   var p=itin[currentTrip][day].places[idx];if(!p)return;
@@ -975,7 +1018,7 @@ function saveEditPlace(){
   var newDay=document.getElementById('m-ep-day').value;
   var p=itin[currentTrip][editingDay].places[editingIdx];if(!p)return;
   var name=document.getElementById('m-ep-name').value.trim();if(!name)return;
-  var updated={name:name,arrive:document.getElementById('m-ep-arrive').value||'--:--',stay:document.getElementById('m-ep-stay').value||'-',hours:document.getElementById('m-ep-hours').value||'-',fee:document.getElementById('m-ep-fee').value||'-',note:document.getElementById('m-ep-note').value||'',transit:{method:document.getElementById('m-ep-transit').value||'',time:document.getElementById('m-ep-ttime').value||'',tip:document.getElementById('m-ep-ttip').value||''}};
+  var updated={name:name,arrive:document.getElementById('m-ep-arrive').value||'--:--',stay:document.getElementById('m-ep-stay').value||'-',hours:document.getElementById('m-ep-hours').value||'-',fee:document.getElementById('m-ep-fee').value||'-',note:document.getElementById('m-ep-note').value||'',transit:{method:document.getElementById('m-ep-transit').value||'',time:document.getElementById('m-ep-ttime').value||'',tip:document.getElementById('m-ep-ttip').value||''},booking:p.booking||{link:'',memo:'',confirmed:false}};
   if(newDay!==editingDay){
     itin[currentTrip][editingDay].places.splice(editingIdx,1);
     if(!itin[currentTrip][newDay])itin[currentTrip][newDay]={theme:newDay,places:[]};
@@ -987,7 +1030,7 @@ function saveEditPlace(){
   saveAll();closeM('modal-edit-place');renderItinerary();
 }
 
-function addPlace(){var day=document.getElementById('m-p-day').value,name=document.getElementById('m-p-name').value.trim();if(!name)return;if(!itin[currentTrip])itin[currentTrip]={};if(!itin[currentTrip][day])itin[currentTrip][day]={theme:day,places:[]};itin[currentTrip][day].places.push({name:name,arrive:document.getElementById('m-p-arrive').value||'--:--',stay:document.getElementById('m-p-stay').value||'-',hours:document.getElementById('m-p-hours').value||'-',fee:document.getElementById('m-p-fee').value||'-',note:document.getElementById('m-p-note').value||'',transit:{method:document.getElementById('m-p-transit').value||'',time:document.getElementById('m-p-ttime').value||'',tip:document.getElementById('m-p-ttip').value||''}});currentDay=day;saveAll();closeM('modal-place');['m-p-name','m-p-arrive','m-p-stay','m-p-hours','m-p-fee','m-p-note','m-p-ttime','m-p-ttip'].forEach(function(i){document.getElementById(i).value='';});renderItinerary();}
+function addPlace(){var day=document.getElementById('m-p-day').value,name=document.getElementById('m-p-name').value.trim();if(!name)return;if(!itin[currentTrip])itin[currentTrip]={};if(!itin[currentTrip][day])itin[currentTrip][day]={theme:day,places:[]};itin[currentTrip][day].places.push({name:name,arrive:document.getElementById('m-p-arrive').value||'--:--',stay:document.getElementById('m-p-stay').value||'-',hours:document.getElementById('m-p-hours').value||'-',fee:document.getElementById('m-p-fee').value||'-',note:document.getElementById('m-p-note').value||'',transit:{method:document.getElementById('m-p-transit').value||'',time:document.getElementById('m-p-ttime').value||'',tip:document.getElementById('m-p-ttip').value||''},booking:{link:'',memo:'',confirmed:false}});currentDay=day;saveAll();closeM('modal-place');['m-p-name','m-p-arrive','m-p-stay','m-p-hours','m-p-fee','m-p-note','m-p-ttime','m-p-ttip'].forEach(function(i){document.getElementById(i).value='';});renderItinerary();}
 
 /* ── CURRENCY ── */
 var CURRENCIES=[
@@ -1305,6 +1348,30 @@ renderHome();
   </div>
   <div class="modal-lbl">메모</div><input class="modal-inp" id="m-ep-note" placeholder="예: 사전 예약 필수">
   <div class="modal-btns"><button class="btn-c" onclick="closeM('modal-edit-place')">취소</button><button class="btn-ok" onclick="saveEditPlace()">저장</button></div>
+</div></div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-bg" id="modal-booking"><div class="modal-box">
+  <div class="modal-handle"></div>
+  <div class="modal-title">🎫 예약 정보</div>
+  <div id="bk-place-name" style="font-size:13px;font-weight:700;color:var(--navy2);margin-bottom:14px;"></div>
+  <div class="modal-lbl">예약 페이지 링크</div>
+  <input class="modal-inp" id="bk-link" type="url" placeholder="https://" oninput="updateBkLinkPreview(this.value)">
+  <div id="bk-link-preview" style="display:none;margin-top:6px;">
+    <button onclick="openBkLink()" style="width:100%;padding:10px;border-radius:var(--r2);background:var(--navy2);color:#fff;border:none;font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;">예약 페이지 열기 →</button>
+  </div>
+  <div class="modal-lbl" style="margin-top:12px;">예약 확인번호 / 메모</div>
+  <input class="modal-inp" id="bk-memo" placeholder="예: ABC123456 / 이름: 홍길동">
+  <div style="display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;background:var(--off);border-radius:var(--r2);">
+    <div style="flex:1;font-size:13px;font-weight:700;color:var(--text);">예약 완료</div>
+    <div id="bk-toggle" onclick="toggleBkConfirmed()" style="width:44px;height:24px;border-radius:12px;background:var(--off2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;">
+      <div id="bk-knob" style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2);"></div>
+    </div>
+  </div>
+  <div class="modal-btns" style="margin-top:14px;">
+    <button class="btn-c" onclick="closeM('modal-booking')">취소</button>
+    <button class="btn-ok" onclick="saveBooking()">저장</button>
+  </div>
 </div></div>
 
 </body>
