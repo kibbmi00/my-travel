@@ -273,6 +273,13 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
 .cat-color-기타{background:var(--off2);color:var(--navy2);}
 .bucket-empty{text-align:center;padding:40px 0;color:var(--text3);font-size:13px;font-weight:600;}
 
+/* ── DATA MANAGEMENT ──────────────────────────── */
+.data-mgmt{margin-top:20px;padding-top:16px;border-top:1px solid var(--off2);}
+.data-mgmt-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+.data-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.data-btn{padding:13px 10px;border-radius:var(--r2);border:1.5px solid var(--off2);background:var(--card);font-size:12px;font-weight:700;color:var(--navy2);cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:var(--shadow);transition:transform .15s;}
+.data-btn:active{transform:scale(.97);}
+
 /* ── ADD BUTTON ────────────────────────────────── */
 .add-btn{width:100%;margin-top:12px;padding:12px;border-radius:var(--r);border:2px dashed var(--off2);color:var(--navy2);background:var(--card);cursor:pointer;font-size:13px;font-weight:700;font-family:var(--sans);box-shadow:0 2px 8px rgba(26,35,126,.06);}
 
@@ -337,6 +344,14 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
         <div class="add-trip-btn" onclick="openM('modal-trip')">
           <div class="add-trip-icon">＋</div>
           <div><div class="add-trip-text">새 여행 추가</div><div class="add-trip-sub">일정, 예산, 사진을 한 곳에</div></div>
+        </div>
+        <div class="data-mgmt">
+          <div class="data-mgmt-label">데이터 관리</div>
+          <div class="data-btns">
+            <button class="data-btn" onclick="exportData()">⬇ JSON 내보내기</button>
+            <label class="data-btn" for="import-file">⬆ JSON 가져오기</label>
+            <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importData(event)">
+          </div>
         </div>
       </div>
     </div>
@@ -629,6 +644,41 @@ var spotImgTemp='';
 var currentBucketFilter='전체';
 
 function saveAll(){sv('mt_trips',trips);sv('mt_checks',checks);sv('mt_itin',itin);sv('mt_exps',exps);sv('mt_emgs',emgs);sv('mt_photos',photos);sv('mt_spots',spots);}
+
+/* ── DATA EXPORT / IMPORT ── */
+function exportData(){
+  var data={version:1,exportedAt:new Date().toISOString(),trips:trips,checks:checks,itin:itin,exps:exps,emgs:emgs,photos:photos,spots:spots};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='my-travel-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function importData(e){
+  var file=e.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var data=JSON.parse(ev.target.result);
+      if(!data.trips||!data.checks){alert('올바른 My Travel 백업 파일이 아닙니다.');e.target.value='';return;}
+      if(!confirm('현재 데이터를 가져온 파일로 덮어쓸까요?\n기존 데이터는 모두 사라집니다.')){e.target.value='';return;}
+      trips=data.trips||[];
+      checks=data.checks||{};
+      itin=data.itin||{};
+      exps=data.exps||{};
+      emgs=data.emgs||{};
+      photos=data.photos||{};
+      spots=data.spots||{};
+      saveAll();
+      renderHome();
+      alert('데이터를 성공적으로 가져왔습니다! ('+trips.length+'개 여행)');
+    }catch(err){alert('파일을 읽는 중 오류가 발생했습니다.\n올바른 JSON 파일인지 확인해주세요.');}
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
 
 /* ── 기본 데이터 보장 (이탈리아가 없으면 자동 추가) ── */
 function ensureDefaults(){
