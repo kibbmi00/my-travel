@@ -273,6 +273,21 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
 .cat-color-기타{background:var(--off2);color:var(--navy2);}
 .bucket-empty{text-align:center;padding:40px 0;color:var(--text3);font-size:13px;font-weight:600;}
 
+/* ── PHRASEBOOK ───────────────────────────────── */
+.phrase-cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;}
+.phrase-cats::-webkit-scrollbar{display:none;}
+.phrase-cat-btn{flex-shrink:0;padding:6px 14px;border-radius:var(--r3);border:2px solid var(--off2);font-size:12px;font-weight:700;cursor:pointer;background:var(--card);color:var(--text3);font-family:var(--sans);transition:all .15s;}
+.phrase-cat-btn.active{background:var(--navy2);border-color:var(--navy2);color:#fff;}
+.phrase-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:15px 16px;margin-bottom:10px;cursor:pointer;transition:transform .15s;border:2px solid transparent;}
+.phrase-card:active{transform:scale(.98);border-color:var(--navy2);}
+.phrase-situation{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.phrase-it{font-size:19px;font-weight:800;color:var(--navy2);margin-bottom:5px;line-height:1.35;}
+.phrase-en{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:3px;}
+.phrase-pron{font-size:11px;color:var(--text3);font-weight:600;}
+.phrase-copy-hint{font-size:10px;color:var(--accent2);font-weight:700;margin-top:7px;}
+.phrase-toast{position:fixed;bottom:calc(var(--safe-bot) + 80px);left:50%;transform:translateX(-50%);background:rgba(26,35,126,.92);color:#fff;font-size:13px;font-weight:700;padding:9px 22px;border-radius:var(--r3);opacity:0;transition:opacity .2s;pointer-events:none;z-index:600;white-space:nowrap;}
+.phrase-toast.show{opacity:1;}
+
 /* ── DATA MANAGEMENT ──────────────────────────── */
 .data-mgmt{margin-top:20px;padding-top:16px;border-top:1px solid var(--off2);}
 .data-mgmt-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
@@ -370,6 +385,7 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
           <button class="inner-tab" onclick="switchInner('emergency',this)">🆘 긴급</button>
           <button class="inner-tab" onclick="switchInner('photos',this)">📸 사진</button>
           <button class="inner-tab" onclick="switchInner('bucket',this)">⭐ 위시</button>
+          <button class="inner-tab" onclick="switchInner('phrase',this)">🗣 회화</button>
         </div>
       </div>
 
@@ -452,6 +468,12 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
         <div class="photo-empty" id="photo-empty">사진을 올려서 가족과 공유해보세요 📸</div>
       </div>
 
+      <!-- PHRASEBOOK -->
+      <div id="tab-phrase" class="tab-content">
+        <div class="phrase-cats" id="phrase-cats"></div>
+        <div id="phrase-list"></div>
+      </div>
+
       <!-- BUCKET -->
       <div id="tab-bucket" class="tab-content">
         <div class="spot-count-bar">
@@ -475,6 +497,8 @@ body{height:100%;background:var(--off);color:var(--text);font-family:var(--sans)
   <div class="viewer-info"><div class="viewer-cap" id="viewer-cap"></div><div class="viewer-auth" id="viewer-auth"></div></div>
   <button class="viewer-del" onclick="deletePhoto()">삭제</button>
 </div>
+
+<div class="phrase-toast" id="phrase-toast">📋 복사됨!</div>
 
 <!-- NAME PROMPT -->
 <div class="name-prompt" id="name-prompt">
@@ -1326,7 +1350,80 @@ function dismissBanner(){localStorage.setItem('mt_banner','1');document.getEleme
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone&&!localStorage.getItem('mt_banner')){setTimeout(function(){document.getElementById('install-banner').classList.add('show');},2500);}
 
 /* ── RENDER ALL ── */
-function renderAll(){renderChecklist();renderItinerary();renderExpense();renderEmergency();renderPhotos();renderBucket();renderFxUI();}
+/* ── PHRASEBOOK ── */
+var currentPhrCat='전체';
+var PHRASE_FILTERED=[];
+var PHR_CAT_EMOJI={인사:'👋',기본:'💬',식당:'🍽',교통:'🚆',쇼핑:'🛍',호텔:'🏨',긴급:'🆘'};
+var PHRASES=[
+  {cat:'인사',ko:'낮에 만났을 때',it:'Buongiorno!',en:'Good morning / Good day!',pron:'부온조르노'},
+  {cat:'인사',ko:'저녁에 만났을 때',it:'Buonasera!',en:'Good evening!',pron:'부오나세라'},
+  {cat:'인사',ko:'친한 사이 인사·작별',it:'Ciao!',en:'Hi! / Bye!',pron:'챠오'},
+  {cat:'기본',ko:'감사합니다',it:'Grazie mille!',en:'Thank you very much!',pron:'그라찌에 밀레'},
+  {cat:'기본',ko:'천만에요 / 여기요',it:'Prego!',en:"You're welcome! / Here you go!",pron:'프레고'},
+  {cat:'기본',ko:'실례합니다',it:'Scusi!',en:'Excuse me!',pron:'스쿠지'},
+  {cat:'기본',ko:'죄송합니다',it:'Mi dispiace.',en:"I'm sorry.",pron:'미 디스피아체'},
+  {cat:'기본',ko:'이해 못 했어요',it:'Non capisco.',en:"I don't understand.",pron:'논 카피스코'},
+  {cat:'기본',ko:'영어 하세요?',it:'Parla inglese?',en:'Do you speak English?',pron:'파를라 잉글레제'},
+  {cat:'기본',ko:'네 / 아니요',it:'Sì / No',en:'Yes / No',pron:'씨 / 노'},
+  {cat:'기본',ko:'부탁합니다',it:'Per favore.',en:'Please.',pron:'페르 파보레'},
+  {cat:'기본',ko:'얼마예요?',it:'Quanto costa?',en:'How much is it?',pron:'꽌토 코스타'},
+  {cat:'기본',ko:'어디에 있어요?',it:"Dov'è...?",en:'Where is...?',pron:'도베'},
+  {cat:'식당',ko:'두 명 자리 부탁해요',it:'Un tavolo per due, per favore.',en:'A table for two, please.',pron:'운 타볼로 페르 두에'},
+  {cat:'식당',ko:'메뉴판 주세요',it:'Il menù, per favore.',en:'The menu, please.',pron:'일 메누 페르 파보레'},
+  {cat:'식당',ko:'추천 메뉴가 뭐예요?',it:'Cosa consiglia?',en:'What do you recommend?',pron:'코자 콘실리아'},
+  {cat:'식당',ko:'계산서 주세요',it:'Il conto, per favore.',en:'The bill, please.',pron:'일 콘토 페르 파보레'},
+  {cat:'식당',ko:'서비스료 포함인가요?',it:'È incluso il servizio?',en:'Is service included?',pron:'에 인클루조 일 세르비찌오'},
+  {cat:'식당',ko:'물 (탄산 없는 / 있는)',it:'Acqua naturale / frizzante.',en:'Still / sparkling water.',pron:'아꽈 나투랄레 / 프리짠테'},
+  {cat:'식당',ko:'맛있어요!',it:'Buonissimo!',en:'Delicious!',pron:'부오니씨모'},
+  {cat:'식당',ko:'알레르기가 있어요',it:'Sono allergico a...',en:'I am allergic to...',pron:'소노 알레르지코 아'},
+  {cat:'교통',ko:'기차역이 어디예요?',it:"Dov'è la stazione?",en:'Where is the train station?',pron:'도베 라 스타찌오네'},
+  {cat:'교통',ko:'...행 표 한 장 주세요',it:'Un biglietto per..., per favore.',en:'One ticket to..., please.',pron:'운 빌리에토 페르'},
+  {cat:'교통',ko:'몇 시에 출발해요?',it:'A che ora parte?',en:'What time does it leave?',pron:'아 케 오라 파르테'},
+  {cat:'교통',ko:'...까지 가주세요 (택시)',it:'Mi può portare a...?',en:'Can you take me to...?',pron:'미 뿌오 포르타레 아'},
+  {cat:'교통',ko:'여기서 세워주세요',it:'Fermi qui, per favore.',en:'Stop here, please.',pron:'페르미 퀴 페르 파보레'},
+  {cat:'교통',ko:'얼마나 걸려요?',it:'Quanto ci vuole?',en:'How long does it take?',pron:'꽌토 치 부올레'},
+  {cat:'쇼핑',ko:'입어봐도 될까요?',it:'Posso provarlo?',en:'Can I try it on?',pron:'포쏘 프로바를로'},
+  {cat:'쇼핑',ko:'다른 사이즈 있어요?',it:"Ce l'ha in un'altra taglia?",en:'Do you have it in another size?',pron:'체 라 인 우날트라 탈리아'},
+  {cat:'쇼핑',ko:'카드 되나요?',it:'Accettate carte di credito?',en:'Do you accept credit cards?',pron:'아체타테 카르테 디 크레디토'},
+  {cat:'쇼핑',ko:'영수증 주세요',it:'Posso avere lo scontrino?',en:'Can I have the receipt?',pron:'포쏘 아베레 로 스콘트리노'},
+  {cat:'호텔',ko:'예약했어요',it:'Ho una prenotazione.',en:'I have a reservation.',pron:'오 우나 프레노타찌오네'},
+  {cat:'호텔',ko:'체크인/아웃 몇 시예요?',it:'A che ora è il check-in/out?',en:'What time is check-in/out?',pron:'아 케 오라 에 일 체크인/아웃'},
+  {cat:'호텔',ko:'와이파이 있나요?',it:"C'è il Wi-Fi?",en:'Is there Wi-Fi?',pron:'체 일 와이파이'},
+  {cat:'호텔',ko:'방 열쇠 주세요',it:'La chiave della camera, per favore.',en:'The room key, please.',pron:'라 키아베 델라 카메라'},
+  {cat:'긴급',ko:'도와주세요!',it:'Aiuto!',en:'Help!',pron:'아이우토'},
+  {cat:'긴급',ko:'경찰 불러주세요!',it:'Chiami la polizia!',en:'Call the police!',pron:'키아미 라 폴리찌아'},
+  {cat:'긴급',ko:'의사가 필요해요',it:'Ho bisogno di un medico.',en:'I need a doctor.',pron:'오 비조뇨 디 운 메디코'},
+  {cat:'긴급',ko:'여권을 잃어버렸어요',it:'Ho perso il passaporto.',en:'I lost my passport.',pron:'오 페르소 일 파싸포르토'},
+  {cat:'긴급',ko:'도둑맞았어요',it:'Mi hanno rubato...',en:'I was robbed of...',pron:'미 안노 루바토'},
+  {cat:'긴급',ko:'병원이 어디예요?',it:"Dov'è l'ospedale?",en:'Where is the hospital?',pron:'도베 로스페달레'},
+];
+function renderPhrasebook(){
+  var cats=['전체','인사','기본','식당','교통','쇼핑','호텔','긴급'];
+  document.getElementById('phrase-cats').innerHTML=cats.map(function(c){
+    return '<button class="phrase-cat-btn'+(c===currentPhrCat?' active':'')+'" onclick="selPhrCat(\''+c+'\')">'+(PHR_CAT_EMOJI[c]?PHR_CAT_EMOJI[c]+' ':'')+c+'</button>';
+  }).join('');
+  PHRASE_FILTERED=currentPhrCat==='전체'?PHRASES:PHRASES.filter(function(p){return p.cat===currentPhrCat;});
+  document.getElementById('phrase-list').innerHTML=PHRASE_FILTERED.map(function(p,i){
+    return '<div class="phrase-card" onclick="copyPhrase('+i+')">'+
+      '<div class="phrase-situation">'+(PHR_CAT_EMOJI[p.cat]||'💬')+' '+p.ko+'</div>'+
+      '<div class="phrase-it">'+p.it+'</div>'+
+      '<div class="phrase-en">'+p.en+'</div>'+
+      '<div class="phrase-pron">발음: '+p.pron+'</div>'+
+      '<div class="phrase-copy-hint">탭하면 이탈리아어 문구가 복사돼요</div>'+
+    '</div>';
+  }).join('');
+}
+function selPhrCat(cat){currentPhrCat=cat;renderPhrasebook();}
+function copyPhrase(i){
+  var p=PHRASE_FILTERED[i];if(!p)return;
+  if(navigator.clipboard){navigator.clipboard.writeText(p.it).catch(function(){});}
+  else{var ta=document.createElement('textarea');ta.value=p.it;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+  var toast=document.getElementById('phrase-toast');
+  toast.classList.add('show');
+  setTimeout(function(){toast.classList.remove('show');},1500);
+}
+
+function renderAll(){renderChecklist();renderItinerary();renderExpense();renderEmergency();renderPhotos();renderBucket();renderFxUI();renderPhrasebook();}
 
 if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
 ensureDefaults();
